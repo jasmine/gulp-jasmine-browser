@@ -6,7 +6,7 @@ function gulp(task, callback) {
     'node_modules/.bin/gulp',
     '--gulpfile', path.resolve(__dirname, 'fixtures', 'gulpfile.js'),
     task
-  ].join(' '), {encoding: 'utf8'}, callback);
+  ].join(' '), callback);
 }
 
 describe('gulp-jasmine-browser', function() {
