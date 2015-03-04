@@ -1,0 +1,32 @@
+{
+  "name": "gulp-jasmine-browser",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/pivotal-cf/gulp-jasmine-browser",
+  "bugs": "https://github.com/pivotal-cf/gulp-jasmine-browser/issues",
+  "files": ["index.js", "README.md", "LICENSE"],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pivotal-cf/gulp-jasmine-browser"
+  },
+  "devDependencies": {
+    "jasmine": "^2.2.0",
+    "gulp": "^3.8.11",
+    "jsdom": "^3.1.2"
+  },
+  "dependencies": {
+    "jasmine-core": "^2.2.0",
+    "through2": "^1.1.1",
+    "through2-reduce": "^0.3.0",
+    "phantomjs": "^1.9.16",
+    "vinyl": "^0.4.6"
+  },
+  "peerDependencies": {
+    "gulp": "^3.8.11"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/jasmine"
+  }
+}
