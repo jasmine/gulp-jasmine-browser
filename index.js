@@ -17,10 +17,12 @@ exports.phantomjs = function() {
   return through.obj(function(specRunner, encoding, callback) {
     var phantomProcess = childProcess.spawn(phantomjs.path, ['phantom_runner.js'], {
       cwd: path.resolve(__dirname, 'lib'),
-      stdio: ['pipe', 'inherit', 'inherit']
+      stdio: 'pipe'
     });
     phantomProcess.on('close', function() { callback(); });
     specRunner.contents.pipe(phantomProcess.stdin);
+    phantomProcess.stdout.pipe(process.stdout);
+    phantomProcess.stderr.pipe(process.stderr);
     specRunner.contents.push(null);
   });
 };
