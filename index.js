@@ -2,7 +2,6 @@
 var path = require('path');
 var childProcess = require('child_process');
 var through = require('through2');
-var phantomjs = require('phantomjs');
 var express = require('express');
 var SpecRunner = require('./lib/spec_runner');
 
@@ -27,7 +26,7 @@ exports.phantomjs = function() {
     });
     callback();
   }, function(callback) {
-    var phantomProcess = childProcess.spawn(phantomjs.path, ['phantom_runner.js'], {
+    var phantomProcess = childProcess.spawn('phantomjs', ['phantom_runner.js'], {
       cwd: path.resolve(__dirname, 'lib'),
       stdio: 'pipe'
     });

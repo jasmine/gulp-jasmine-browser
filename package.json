@@ -26,7 +26,6 @@
   "dependencies": {
     "jasmine-core": "^2.2.0",
     "through2": "^1.1.1",
-    "phantomjs": "^1.9.16",
     "vinyl": "^0.4.6",
     "express": "^4.12.2"
   },

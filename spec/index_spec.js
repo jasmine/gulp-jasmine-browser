@@ -4,6 +4,8 @@ var childProcess = require('child_process');
 var selenium = require('selenium-standalone');
 var webdriverio = require('webdriverio');
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+
 function gulp(task, callback) {
   return childProcess.exec([
     'node_modules/.bin/gulp',
@@ -16,7 +18,7 @@ function withSelenium(callback) {
   selenium.install(function() {
     selenium.start(function(error, seleniumProcess) {
       callback(seleniumProcess, webdriverio.remote().init());
-    })
+    });
   });
 }
 
