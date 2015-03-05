@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var jsdom = require('jsdom');
+var cheerio = require('cheerio');
 var jasmineCore = require('jasmine-core');
 var SpecRunner = require('../lib/spec_runner');
 
@@ -16,85 +16,54 @@ var jasmineBootFiles = jasmineCore.files.bootFiles.map(function(fileName) {
 var consoleJs = fs.readFileSync(path.resolve(__dirname, '..', 'lib', 'console.js'), 'utf8');
 var consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', 'lib', 'console_boot.js'), 'utf8');
 
-function readStream(stream, callback) {
-  stream.push(null);
-
-  var result = '';
-  stream.on('data', function(chunk) {
-    result += chunk;
-  });
-
-  stream.on('end', function() {
-    callback(result);
-  });
-}
-
 describe('SpecRunner', function() {
   var specRunnerFile;
   beforeEach(function() {
     specRunnerFile = new SpecRunner({console: true});
   });
 
-  it('includes all of the Jasmine library files', function(done) {
-    readStream(specRunnerFile.contents, function(html) {
-      jsdom.env({
-        html: html,
-        done: function(errors, window) {
-          var tags = window.document.querySelectorAll('script,style');
-          var tagContents = Object.keys(tags).map(function(index) {
-            return tags[index].innerHTML;
-          });
+  it('includes all of the Jasmine library files', function() {
+    var html = specRunnerFile.contents.toString();
+    var tags = cheerio.load(html)('script,style,link');
 
-          expect(tags.length).toBe(6);
+    expect(tags.length).toBe(6);
 
-          expect(tagContents[0]).toBe(jasmineCssFiles[0]);
-          expect(tags[0] instanceof window.HTMLStyleElement).toBeTruthy();
+    expect(tags.eq(0).is('style')).toBe(true);
+    expect(tags.eq(0).html()).toBe(jasmineCssFiles[0]);
 
-          expect(tagContents[1]).toBe(jasmineJsFiles[0]);
-          expect(tags[1] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(1).is('script')).toBe(true);
+    expect(tags.eq(1).html()).toBe(jasmineJsFiles[0]);
 
-          expect(tagContents[2]).toBe(jasmineJsFiles[1]);
-          expect(tags[2] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(2).is('script')).toBe(true);
+    expect(tags.eq(2).html()).toBe(jasmineJsFiles[1]);
 
-          expect(tagContents[3]).toBe(jasmineJsFiles[2]);
-          expect(tags[3] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(3).is('script')).toBe(true);
+    expect(tags.eq(3).html()).toBe(jasmineJsFiles[2]);
 
-          expect(tagContents[4]).toBe(consoleJs);
-          expect(tags[4] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(4).is('script')).toBe(true);
+    expect(tags.eq(4).html()).toBe(consoleJs);
 
-          expect(tagContents[5]).toBe(consoleBootJs);
-          expect(tags[5] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(5).is('script')).toBe(true);
+    expect(tags.eq(5).html()).toBe(consoleBootJs);
 
-          done();
-        }
-      });
-    });
   });
 
   it('allows adding additional css and js files', function() {
-    specRunnerFile.addFile('foo.js', 'window.foo = 1 + 1');
-    specRunnerFile.addFile('bar.css', 'body { font-size: 16px; }');
+    specRunnerFile.addFile('foo.js');
+    specRunnerFile.addFile('bar.css');
+    specRunnerFile.addFile('foo.js');
+    specRunnerFile.addFile('bar.css');
+    specRunnerFile.addFile('bar.css');
 
-    readStream(specRunnerFile.contents, function(html) {
-      jsdom.env({
-        html: html,
-        done: function(errors, window) {
-          var tags = window.document.querySelectorAll('script,style');
-          var tagContents = Object.keys(tags).map(function(index) {
-            return tags[index].innerHTML;
-          });
+    var html = specRunnerFile.contents;
+    var tags = cheerio.load(html)('script,style,link');
 
-          expect(tags.length).toBe(8);
+    expect(tags.length).toBe(8);
 
-          expect(tagContents[6]).toBe('window.foo = 1 + 1');
-          expect(tags[6] instanceof window.HTMLScriptElement).toBeTruthy();
+    expect(tags.eq(6).attr('src')).toBe('foo.js');
+    expect(tags.eq(6).is('script')).toBe(true);
 
-          expect(tagContents[7]).toBe('body { font-size: 16px; }');
-          expect(tags[7] instanceof window.HTMLStyleElement).toBeTruthy();
-
-          done();
-        }
-      });
-    });
+    expect(tags.eq(7).attr('href')).toBe('bar.css');
+    expect(tags.eq(7).is('link')).toBe(true);
   });
 });
