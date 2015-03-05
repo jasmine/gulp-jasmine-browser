@@ -17,6 +17,7 @@ function gulp(task, callback) {
 function withSelenium(callback) {
   selenium.install(function() {
     selenium.start(function(error, seleniumProcess) {
+      if (error) { throw new Error(error); }
       callback(seleniumProcess, webdriverio.remote().init());
     });
   });
