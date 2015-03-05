@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "jasmine": "^2.2.0",
+    "selenium-standalone": "^4.2.0",
+    "webdriverio": "^2.4.5",
     "gulp": "^3.8.11",
     "jsdom": "^3.1.2"
   },
@@ -21,7 +23,8 @@
     "through2": "^1.1.1",
     "through2-reduce": "^0.3.0",
     "phantomjs": "^1.9.16",
-    "vinyl": "^0.4.6"
+    "vinyl": "^0.4.6",
+    "express": "^4.12.2"
   },
   "peerDependencies": {
     "gulp": "^3.8.11"

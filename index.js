@@ -4,7 +4,7 @@ var childProcess = require('child_process');
 var reduce = require('through2-reduce');
 var through = require('through2');
 var phantomjs = require('phantomjs');
-//var express = require('express');
+var express = require('express');
 var SpecRunner = require('./lib/spec_runner');
 
 exports.specRunner = function(options) {
@@ -27,28 +27,13 @@ exports.phantomjs = function() {
   });
 };
 
-//function jasmineServer(options) {
-//  var app;
-//  var files = {};
-//  options = Object(options);
-//  specRunner = options.specRunner || specRunner;
-//
-//  function createServer() {
-//    var app = express();
-//    var port = options.port || 8888;
-//
-//    app.get('/', function(req, res) {
-//      res.type('html').status(200).send(specRunner(files));
-//    });
-//
-//    //app.listen(port, () => console.log(`Jasmine server listening on ${port}`));
-//    return app;
-//  }
-//
-//  return through.obj(function(file, enc, callback) {
-//    files[path.basename(file.path)] = file.contents;
-//    this.push(file);
-//    if (!app) app = createServer();
-//    callback();
-//  });
-//}
+exports.server = function() {
+  var savedSpecRunner = '';
+  return through.obj(function(specRunner, encoding, callback) {
+    specRunner.contents.on('data', function(chunk) { savedSpecRunner += chunk; });
+    express()
+      .get('/', function(req, res) { res.send(savedSpecRunner); })
+      .listen(8888);
+    specRunner.contents.push(null);
+  });
+};
