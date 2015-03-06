@@ -16,11 +16,7 @@ exports.specRunner = function(options) {
 
 exports.phantomjs = function() {
   var app = express();
-  var server = app.listen(8888);
-  app.get('/', function(req, res) {
-    res.redirect('/specRunner.html')
-  });
-  return through.obj(function(file, encoding, callback) {
+  var stream = through.obj(function(file, encoding, callback) {
     app.get(file.path, function(req, res) {
       res.send(file.contents.toString());
     });
@@ -37,6 +33,15 @@ exports.phantomjs = function() {
     phantomProcess.stdout.pipe(process.stdout);
     phantomProcess.stderr.pipe(process.stderr);
   });
+  stream.pause();
+
+  var server = app.listen(8888, function() {
+    stream.resume();
+  });
+  app.get('/', function(req, res) {
+    res.redirect('/specRunner.html')
+  });
+  return stream;
 };
 
 exports.server = function() {
