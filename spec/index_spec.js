@@ -23,7 +23,7 @@ function withSelenium(callback) {
 }
 
 describe('gulp-jasmine-browser', function() {
-  xit('can run tests via PhantomJS', function(done) {
+  it('can run tests via PhantomJS', function(done) {
     var gulpProcess = gulp('phantomjs', function(error, stdout, stderr) {
       expect(error).toBe(null);
       expect(stderr).toBe('');

@@ -40,17 +40,22 @@ exports.phantomjs = function() {
 };
 
 exports.server = function() {
-  var app = express();
   var files = {};
-  app.listen(8888);
+  var stream = through.obj(function(file, encoding, callback) {
+    files[file.path] = file.contents;
+    callback();
+  });
+  stream.pause();
+
+  var app = express();
+  app.listen(8888, function() {
+    stream.resume();
+  });
   app.get('/', function(req, res) {
     res.redirect('/specRunner.html')
   });
   app.get('*', function(req, res) {
     res.send(files[req.path].toString());
   });
-  return through.obj(function(file, encoding, callback) {
-    files[file.path] = file.contents;
-    callback();
-  });
+  return stream;
 };
