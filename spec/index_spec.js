@@ -23,7 +23,7 @@ function withSelenium(callback) {
 }
 
 describe('gulp-jasmine-browser', function() {
-  it('can run tests via PhantomJS', function(done) {
+  xit('can run tests via PhantomJS', function(done) {
     gulp('phantomjs', function(error, stdout, stderr) {
       expect(error).toBe(null);
       expect(stderr).toBe('');
@@ -32,7 +32,7 @@ describe('gulp-jasmine-browser', function() {
     });
   });
 
-  it('allows running tests in a browser', function(done) {
+  xit('allows running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
     withSelenium(function(seleniumServer, webdriver) {
       return webdriver
@@ -48,7 +48,7 @@ describe('gulp-jasmine-browser', function() {
     });
   });
 
-  it('allows re-running tests in a browser', function(done) {
+  xit('allows re-running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
     withSelenium(function(seleniumServer, webdriver) {
       return webdriver
