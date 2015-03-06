@@ -24,12 +24,13 @@ function withSelenium(callback) {
 
 describe('gulp-jasmine-browser', function() {
   it('can run tests via PhantomJS', function(done) {
-    gulp('phantomjs', function(error, stdout, stderr) {
+    var gulpProcess = gulp('phantomjs', function(error, stdout, stderr) {
       expect(error).toBe(null);
       expect(stderr).toBe('');
       expect(stdout).toContain('2 specs, 1 failure');
-      done();
+      gulpProcess.kill('SIGKILL');
     });
+    gulpProcess.on('close', done);
   });
 
   it('allows running tests in a browser', function(done) {
