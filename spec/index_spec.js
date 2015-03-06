@@ -33,7 +33,7 @@ describe('gulp-jasmine-browser', function() {
     gulpProcess.on('close', done);
   });
 
-  it('allows running tests in a browser', function(done) {
+  xit('allows running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
     gulpProcess.on('close', done);
     withSelenium(function(seleniumServer, webdriver) {
