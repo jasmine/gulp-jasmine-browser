@@ -26,6 +26,7 @@
   "dependencies": {
     "express": "^4.12.2",
     "jasmine-core": "^2.2.0",
+    "portfinder": "^0.4.0",
     "through2": "^1.1.1",
     "vinyl": "^0.4.6"
   },

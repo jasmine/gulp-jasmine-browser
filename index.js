@@ -1,8 +1,7 @@
 'use strict';
 var path = require('path');
 var childProcess = require('child_process');
-var lsof = require('lsof');
-var portfinder = require('portfinder')
+var portfinder = require('portfinder');
 var through = require('through2');
 var express = require('express');
 var SpecRunner = require('./lib/spec_runner');
