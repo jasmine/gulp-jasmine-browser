@@ -42,7 +42,7 @@ describe('gulp-jasmine-browser', function() {
         })
         .end(function() {
           seleniumServer.kill();
-          gulpProcess.kill();
+          gulpProcess.kill('SIGKILL');
           done();
         });
     });
@@ -59,7 +59,7 @@ describe('gulp-jasmine-browser', function() {
         })
         .end(function() {
           seleniumServer.kill();
-          gulpProcess.kill();
+          gulpProcess.kill('SIGKILL');
           done();
         });
     });
@@ -102,7 +102,7 @@ describe('gulp-jasmine-browser', function() {
           expect(text).toBe('1 spec, 0 failures')
         })
         .end(function() {
-          gulpProcess.kill();
+          gulpProcess.kill('SIGKILL');
           fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
           seleniumServer.kill();
           done();
