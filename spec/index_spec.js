@@ -81,6 +81,7 @@ describe('gulp-jasmine-browser', function() {
 
       webdriver.addCommand("waitForWebpack", function(cb) {
         gulpProcess.stdout.on('data', function(chunk) {
+          console.log('stdout', chunk);
           if (chunk.match(/Webpack is watching for changes/)) {
             cb();
           }
