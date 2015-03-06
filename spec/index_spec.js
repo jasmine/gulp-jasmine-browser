@@ -34,7 +34,7 @@ describe('gulp-jasmine-browser', function() {
       expect(error).toBe(null);
       expect(stderr).toBe('');
       expect(stdout).toContain('2 specs, 1 failure');
-      gulpProcess.kill('SIGKILL');
+      gulpProcess.kill();
     });
     gulpProcess.on('close', done);
   });
@@ -51,7 +51,7 @@ describe('gulp-jasmine-browser', function() {
           })
           .end(function() {
             seleniumServer.kill();
-            gulpProcess.kill('SIGKILL');
+            gulpProcess.kill();
           });
       });
     });
@@ -68,7 +68,7 @@ describe('gulp-jasmine-browser', function() {
           })
           .end(function() {
             seleniumServer.kill();
-            gulpProcess.kill('SIGKILL');
+            gulpProcess.kill();
           });
       });
     });
@@ -113,7 +113,7 @@ describe('gulp-jasmine-browser', function() {
           })
           .end(function() {
             seleniumServer.kill();
-            gulpProcess.kill('SIGKILL');
+            gulpProcess.kill();
           });
       });
     });
