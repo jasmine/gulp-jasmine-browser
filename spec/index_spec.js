@@ -89,10 +89,6 @@ describe('gulp-jasmine-browser', function() {
       });
 
       webdriver
-        .call(function() {
-          fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
-        })
-        .waitForWebpack()
         .url('http://localhost:8888')
         .getText('.bar.failed', function(error, text) {
           expect(text).toBe('1 spec, 1 failure')
