@@ -8,7 +8,8 @@
   "files": [
     "index.js",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "lib/spec_runner.js"
   ],
   "main": "index.js",
   "repository": {
