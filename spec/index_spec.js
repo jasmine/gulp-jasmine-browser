@@ -78,7 +78,6 @@ describe('gulp-jasmine-browser', function() {
         "function() { expect(true).toBe(true); " +
         "});";
       var mutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
-      fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
 
       webdriver.addCommand("waitForWebpack", function(cb) {
         gulpProcess.stdout.on('data', function(chunk) {
@@ -89,6 +88,10 @@ describe('gulp-jasmine-browser', function() {
       });
 
       webdriver
+        .call(function() {
+          fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
+        })
+        .waitForWebpack()
         .url('http://localhost:8888')
         .getText('.bar.failed', function(error, text) {
           expect(text).toBe('1 spec, 1 failure')
