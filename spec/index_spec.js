@@ -23,7 +23,7 @@ function withSelenium(callback) {
 }
 
 describe('gulp-jasmine-browser', function() {
-  xit('can run tests via PhantomJS', function(done) {
+  it('can run tests via PhantomJS', function(done) {
     gulp('phantomjs', function(error, stdout, stderr) {
       expect(error).toBe(null);
       expect(stderr).toBe('');
@@ -32,8 +32,9 @@ describe('gulp-jasmine-browser', function() {
     });
   });
 
-  xit('allows running tests in a browser', function(done) {
+  it('allows running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
+    gulpProcess.on('close', done);
     withSelenium(function(seleniumServer, webdriver) {
       return webdriver
         .url('http://localhost:8888')
@@ -43,13 +44,13 @@ describe('gulp-jasmine-browser', function() {
         .end(function() {
           seleniumServer.kill();
           gulpProcess.kill('SIGKILL');
-          done();
         });
     });
   });
 
-  xit('allows re-running tests in a browser', function(done) {
+  it('allows re-running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
+    gulpProcess.on('close', done);
     withSelenium(function(seleniumServer, webdriver) {
       return webdriver
         .url('http://localhost:8888')
@@ -60,28 +61,29 @@ describe('gulp-jasmine-browser', function() {
         .end(function() {
           seleniumServer.kill();
           gulpProcess.kill('SIGKILL');
-          done();
         });
     });
   });
 
   it('supports webpack with watch: true', function(done) {
+    var mutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
+    var oldSpec = "" +
+      "it('makes a basic failing assertion'," +
+      "function() { expect(true).toBe(false); " +
+      "});";
+    var newSpec = "" +
+      "it('makes a basic passing assertion'," +
+      "function() { expect(true).toBe(true); " +
+      "});";
     var gulpProcess = gulp('webpack-server');
-
+    gulpProcess.on('close', function() {
+      fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
+      done();
+    });
     withSelenium(function(seleniumServer, webdriver) {
-      var oldSpec = "" +
-        "it('makes a basic failing assertion'," +
-        "function() { expect(true).toBe(false); " +
-        "});";
-      var newSpec = "" +
-        "it('makes a basic passing assertion'," +
-        "function() { expect(true).toBe(true); " +
-        "});";
-      var mutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
 
       webdriver.addCommand("waitForWebpack", function(cb) {
         gulpProcess.stdout.on('data', function(chunk) {
-          console.log('stdout', chunk);
           if (chunk.match(/Webpack is watching for changes/)) {
             cb();
           }
@@ -102,10 +104,8 @@ describe('gulp-jasmine-browser', function() {
           expect(text).toBe('1 spec, 0 failures')
         })
         .end(function() {
-          gulpProcess.kill('SIGKILL');
-          fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
           seleniumServer.kill();
-          done();
+          gulpProcess.kill('SIGKILL');
         });
     });
   });
