@@ -40,6 +40,31 @@ describe('gulp-jasmine-browser', function() {
   });
 
   describeWithoutTravisCI('when not running on Travis CI', function() {
+    describe('when a server is already running', function() {
+      var gulpServerProcess;
+      beforeEach(function(done) {
+        gulpServerProcess = gulp('webpack-server');
+        gulpServerProcess.stdout.on('data', function(chunk) {
+          if (chunk.match(/listening on port/)) {
+            done();
+          }
+        });
+      });
+      it('will re-use the server if available', function(done) {
+        var gulpPhantomProcess = gulp('phantomjs', function(error, stdout, stderr) {
+          expect(error).toBe(null);
+          expect(stderr).toBe('');
+          expect(stdout).toContain('2 specs, 1 failure');
+          gulpPhantomProcess.kill();
+        });
+
+        gulpServerProcess.on('close', done);
+        gulpPhantomProcess.on('close', function() {
+          gulpServerProcess.kill();
+        });
+      });
+    });
+
     it('allows running tests in a browser', function(done) {
       var gulpProcess = gulp('server');
       gulpProcess.on('close', done);

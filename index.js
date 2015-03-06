@@ -1,25 +1,20 @@
 'use strict';
 var path = require('path');
 var childProcess = require('child_process');
+var lsof = require('lsof');
+var portfinder = require('portfinder')
 var through = require('through2');
 var express = require('express');
 var SpecRunner = require('./lib/spec_runner');
 
 var DEFAULT_JASMINE_PORT = 8888;
 
-function createServer(options) {
-  var port = options && options.port || DEFAULT_JASMINE_PORT;
-
-  var files = {};
-  var stream = through.obj(function(file, encoding, callback) {
-    files[file.path] = file.contents;
-    callback();
-  });
-  stream.pause();
-
+function startNewServer(port, stream, files, callback) {
   var app = express();
   var server = app.listen(port, function() {
-    stream.resume();
+    console.log('Jasmine server listening on port ' + port);
+    callback && callback(server, port);
+    stream.next();
   });
   app.get('/', function(req, res) {
     res.redirect('/specRunner.html')
@@ -27,7 +22,42 @@ function createServer(options) {
   app.get('*', function(req, res) {
     res.send(files[req.path].toString());
   });
-  return {stream: stream, server: server};
+}
+
+function getServer(options, files, stream, callback) {
+  var port = options && options.port || DEFAULT_JASMINE_PORT;
+
+  if(options && options.reUse) {
+    portfinder.getPort(function(err, port) {
+      if (err) return callback(err);
+      startNewServer(port, stream, files, callback);
+    });
+  } else {
+    startNewServer(port, stream, files, callback);
+  }
+}
+
+function createServer(options, callback) {
+  options = Object.create(options || {});
+
+  var files = {};
+  var stream = through.obj(function(file, encoding, done) {
+    files[file.path] = file.contents;
+    if(stream.allowedToContinue) {
+      done();
+    }
+    stream.next = function() {
+      stream.allowedToContinue = true;
+      done();
+    }
+  });
+  stream.next = function() {
+    stream.allowedToContinue = true;
+  };
+
+  getServer(options, files, stream, callback);
+
+  return stream;
 }
 
 exports.specRunner = function(options) {
@@ -40,23 +70,26 @@ exports.specRunner = function(options) {
 };
 
 exports.phantomjs = function(options) {
-  var port = options && options.port || DEFAULT_JASMINE_PORT;
-
-  var container = createServer(options);
-  container.stream.on('end', function() {
-    var phantomProcess = childProcess.spawn('phantomjs', ['phantom_runner.js', port], {
-      cwd: path.resolve(__dirname, 'lib'),
-      stdio: 'pipe'
+  options = Object.create(options || {});
+  if(typeof options.reUse === 'undefined') {
+    options.reUse = true;
+  }
+  var stream = createServer(options, function(server, port) {
+    stream.on('end', function() {
+      var phantomProcess = childProcess.spawn('phantomjs', ['phantom_runner.js', port], {
+        cwd: path.resolve(__dirname, 'lib'),
+        stdio: 'pipe'
+      });
+      phantomProcess.on('close', function() {
+        server && server.close();
+      });
+      phantomProcess.stdout.pipe(process.stdout);
+      phantomProcess.stderr.pipe(process.stderr);
     });
-    phantomProcess.on('close', function() {
-      container.server.close();
-    });
-    phantomProcess.stdout.pipe(process.stdout);
-    phantomProcess.stderr.pipe(process.stderr);
   });
-  return container.stream;
+  return stream;
 };
 
 exports.server = function(options) {
-  return createServer(options).stream;
+  return createServer(options);
 };
