@@ -52,9 +52,6 @@ describe('gulp-jasmine-browser', function() {
   it('allows re-running tests in a browser', function(done) {
     var gulpProcess = gulp('server');
     gulpProcess.on('close', done);
-    gulpProcess.on('uncaughtException', function() {
-      console.log('broken', arguments);
-    });
     withSelenium(function(seleniumServer, webdriver) {
       return webdriver
         .url('http://localhost:8888')
@@ -83,9 +80,6 @@ describe('gulp-jasmine-browser', function() {
     gulpProcess.on('close', function() {
       fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
       done();
-    });
-    gulpProcess.on('uncaughtException', function() {
-      console.log('broken', arguments);
     });
     withSelenium(function(seleniumServer, webdriver) {
 
