@@ -4,7 +4,7 @@ var childProcess = require('child_process');
 var selenium = require('selenium-standalone');
 var webdriverio = require('webdriverio');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 function gulp(task, callback) {  
   var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
@@ -23,9 +23,7 @@ function withSelenium(callback) {
 }
 
 function describeWithoutTravisCI(text, callback) {
-  if (process.env.TRAVIS !== 'true') {
-    callback();
-  }
+  callback();
 }
 
 describe('gulp-jasmine-browser', function() {
