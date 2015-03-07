@@ -1,5 +1,5 @@
 # gulp-jasmine-browser
-[![Build Status](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser.svg?token=qqbUN3LT4qYTrsZnjZQ5)](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser)
+[![Build Status](https://travis-ci.org/jasmine/gulp-jasmine-browser.svg?branch=master)](https://travis-ci.org/jasmine/gulp-jasmine-browser)
 
 ## Installing
 `gulp-jasmine-browser` is available as an
