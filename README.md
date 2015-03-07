@@ -10,7 +10,8 @@
 ## Development
 ### Getting Started
 The application requires the following external dependencies:
-* Node.js
+* [Node](https://nodejs.org/)
+* [PhantomJS](http://phantomjs.org/) - if you want to run tests with Phantom, see your options under 'Usage.'
 
 The rest of the dependencies are handled through:
 ```bash
@@ -24,9 +25,10 @@ npm test
 
 ## Usage
 
-### Create a Jasmine server to run specs in a browser:
+### Create a Jasmine server to run specs in a browser
 
-In your gulpfile
+In `gulpfile.js`
+
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
@@ -43,7 +45,8 @@ CSS files.
 
 ### Run jasmine tests headlessly
 
-In your gulpfile
+In `gulpfile.js`
+
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
@@ -57,8 +60,8 @@ gulp.task('jasmine-phantom', function() {
 
 Note the `{console: true}` passed into specRunner.
 
-GulpJasmineBrowser assumes that Phantom is already installed and in your path.
-It is only tested with Phantom 2.
+GulpJasmineBrowser assumes that `phantomjs` is already installed and in your path.
+It is only tested with PhantomJS 2.
 
 
 ### Usage with Webpack
@@ -67,7 +70,8 @@ If you would like to compile your front end assets with Webpack, for example to 
 commonjs style require statements, you can pipe the compiled assets into
 GulpJasmineBrowser.
 
-In your gulpfile
+In `gulpfile.js`
+
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
