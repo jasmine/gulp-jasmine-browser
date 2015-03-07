@@ -9,7 +9,7 @@
     "index.js",
     "README.md",
     "LICENSE",
-    "lib/spec_runner.js"
+    "lib"
   ],
   "main": "index.js",
   "repository": {
