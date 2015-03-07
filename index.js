@@ -20,7 +20,13 @@ function startNewServer(port, stream, files, callback) {
     res.redirect('/specRunner.html')
   });
   app.get('*', function(req, res) {
-    res.send(files[req.path].toString());
+    var filePath = req.path.replace(/^\//, '');
+    var contents = files[path.normalize(filePath)];
+    if(contents) {
+    res.send(contents.toString())  
+    } else {
+      res.status(404).send('File not Found')
+    }
   });
 }
 
@@ -42,7 +48,7 @@ function createServer(options, callback) {
 
   var files = {};
   var stream = through.obj(function(file, encoding, done) {
-    files[file.path] = file.contents;
+    files[file.relative] = file.contents;
     if(stream.allowedToContinue) {
       done();
     }
@@ -64,7 +70,7 @@ exports.specRunner = function(options) {
   var specRunner = new SpecRunner(options);
   return through.obj(function(file, encoding, callback) {
     this.push(file);
-    this.push(specRunner.addFile(file.path));
+    this.push(specRunner.addFile(file.relative));
     callback();
   });
 };

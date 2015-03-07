@@ -4,14 +4,14 @@ var childProcess = require('child_process');
 var selenium = require('selenium-standalone');
 var webdriverio = require('webdriverio');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
-function gulp(task, callback) {
-  return childProcess.exec([
-    'node_modules/.bin/gulp',
-    '--gulpfile', path.resolve(__dirname, 'fixtures', 'gulpfile.js'),
-    task
-  ].join(' '), callback);
+function gulp(task, callback) {  
+  var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
+  var gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
+  return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '), 
+    {timeout: 5000}, callback);  
+  
 }
 
 function withSelenium(callback) {
@@ -34,7 +34,6 @@ describe('gulp-jasmine-browser', function() {
       expect(error).toBe(null);
       expect(stderr).toBe('');
       expect(stdout).toContain('2 specs, 1 failure');
-      gulpProcess.kill();
     });
     gulpProcess.on('close', done);
   });
@@ -55,7 +54,6 @@ describe('gulp-jasmine-browser', function() {
           expect(error).toBe(null);
           expect(stderr).toBe('');
           expect(stdout).toContain('2 specs, 1 failure');
-          gulpPhantomProcess.kill();
         });
 
         gulpServerProcess.on('close', done);
