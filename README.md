@@ -2,9 +2,8 @@
 [![Build Status](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser.svg?token=qqbUN3LT4qYTrsZnjZQ5)](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser)
 
 ## Installing
-`gulp-jasmine-browser` will soon be available as an
+`gulp-jasmine-browser` is available as an
 [npm package](https://www.npmjs.com/package/gulp-jasmine-browser).
-For now, npm install from github directly.
 
 ## Usage
 
@@ -72,6 +71,7 @@ gulp.task('jasmine', function() {
 ### Getting Started
 The application requires the following external dependencies:
 * [Node](https://nodejs.org/)
+* [Gulp](http://gulpjs.com/)
 * [PhantomJS](http://phantomjs.org/) - if you want to run tests with Phantom, see your options under 'Usage.'
 
 The rest of the dependencies are handled through:
