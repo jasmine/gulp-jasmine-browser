@@ -1,5 +1,3 @@
-(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
-
 # gulp-jasmine-browser
 [![Build Status](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser.svg?token=qqbUN3LT4qYTrsZnjZQ5)](https://magnum.travis-ci.com/pivotal-cf/gulp-jasmine-browser)
 
@@ -7,21 +5,6 @@
 `gulp-jasmine-browser` is available as an
 [npm package](https://www.npmjs.com/package/gulp-jasmine-browser).
 
-## Development
-### Getting Started
-The application requires the following external dependencies:
-* [Node](https://nodejs.org/)
-* [PhantomJS](http://phantomjs.org/) - if you want to run tests with Phantom, see your options under 'Usage.'
-
-The rest of the dependencies are handled through:
-```bash
-npm install
-```
-
-Run tests with:
-```bash
-npm test
-```
 
 ## Usage
 
@@ -85,3 +68,20 @@ gulp.task('jasmine', function() {
 });
 ```
 
+## Development
+### Getting Started
+The application requires the following external dependencies:
+* [Node](https://nodejs.org/)
+* [PhantomJS](http://phantomjs.org/) - if you want to run tests with Phantom, see your options under 'Usage.'
+
+The rest of the dependencies are handled through:
+```bash
+npm install
+```
+
+Run tests with:
+```bash
+npm test
+```
+
+(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
