@@ -33,7 +33,7 @@ function startNewServer(port, stream, files, callback) {
 function getServer(options, files, stream, callback) {
   var port = options && options.port || DEFAULT_JASMINE_PORT;
 
-  if(options && options.reUse) {
+  if(options && options.findOpenPort) {
     portfinder.getPort(function(err, port) {
       if (err) return callback(err);
       startNewServer(port, stream, files, callback);
@@ -77,8 +77,8 @@ exports.specRunner = function(options) {
 
 exports.phantomjs = function(options) {
   options = Object.create(options || {});
-  if(typeof options.reUse === 'undefined') {
-    options.reUse = true;
+  if(typeof options.findOpenPort === 'undefined') {
+    options.findOpenPort = true;
   }
   var stream = createServer(options, function(server, port) {
     stream.on('end', function() {
