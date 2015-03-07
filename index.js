@@ -2,6 +2,7 @@
 //(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
 var path = require('path');
 var childProcess = require('child_process');
+var mime = require('mime');
 var portfinder = require('portfinder');
 var through = require('through2');
 var express = require('express');
@@ -21,12 +22,12 @@ function startNewServer(port, stream, files, callback) {
   });
   app.get('*', function(req, res) {
     var filePath = req.path.replace(/^\//, '');
-    var contents = files[path.normalize(filePath)];
-    if(contents) {
-    res.send(contents.toString())  
-    } else {
-      res.status(404).send('File not Found')
+    var contents, pathname = path.normalize(filePath);
+    if (pathname && (contents = files[pathname])) {
+      res.status(200).type(mime.lookup(pathname)).send(contents.toString());
+      return;
     }
+    res.status(404).send('File not Found')
   });
 }
 

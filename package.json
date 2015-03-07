@@ -1,6 +1,6 @@
 {
   "name": "gulp-jasmine-browser",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "homepage": "https://github.com/pivotal-cf/gulp-jasmine-browser",
@@ -27,6 +27,7 @@
   "dependencies": {
     "express": "^4.12.2",
     "jasmine-core": "^2.2.0",
+    "mime": "^1.3.4",
     "portfinder": "^0.4.0",
     "through2": "^1.1.1",
     "vinyl": "^0.4.6"
