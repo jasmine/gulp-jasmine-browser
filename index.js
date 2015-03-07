@@ -1,4 +1,5 @@
 'use strict';
+//(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
 var path = require('path');
 var childProcess = require('child_process');
 var portfinder = require('portfinder');
