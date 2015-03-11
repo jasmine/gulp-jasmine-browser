@@ -16,7 +16,7 @@ var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
 
 gulp.task('jasmine', function() {
-  return gulp.src(['src/**/*.js', 'spec/**/*.js'])
+  return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner())
     .pipe(jasmineBrowser.server());
 });
@@ -34,7 +34,7 @@ var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
 
 gulp.task('jasmine-phantom', function() {
-  return gulp.src(['src/**/*.js', 'spec/**/*.js'])
+  return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner({console: true}))
     .pipe(jasmineBrowser.phantomjs());
 });
@@ -60,7 +60,7 @@ var jasmineBrowser = require('gulp-jasmine-browser');
 var webpack = require('gulp-webpack');
 
 gulp.task('jasmine', function() {
-  return gulp.src(['src/**/*.js', 'spec/**/*.js'])
+  return gulp.src('spec/**/*_spec.js'])
     .pipe(webpack({watch: true, output: {filename: 'spec.js'}}))
     .pipe(jasmineBrowser.specRunner())
     .pipe(jasmineBrowser.server());
