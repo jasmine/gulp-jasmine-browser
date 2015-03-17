@@ -11,6 +11,14 @@ var SpecRunner = require('./lib/spec_runner');
 var DEFAULT_JASMINE_PORT = 8888;
 
 function startNewServer(port, stream, files, callback) {
+  function renderFile(res, pathname) {
+    var contents;
+    if (pathname && (contents = files[pathname])) {
+      res.status(200).type(mime.lookup(pathname)).send(contents.toString());
+      return;
+    }
+    res.status(404).send('File not Found')
+  }
   var app = express();
   var server = app.listen(port, function() {
     console.log('Jasmine server listening on port ' + port);
@@ -18,16 +26,12 @@ function startNewServer(port, stream, files, callback) {
     stream.next();
   });
   app.get('/', function(req, res) {
-    res.redirect('/specRunner.html')
+    renderFile(res, 'specRunner.html');
   });
   app.get('*', function(req, res) {
     var filePath = req.path.replace(/^\//, '');
-    var contents, pathname = path.normalize(filePath);
-    if (pathname && (contents = files[pathname])) {
-      res.status(200).type(mime.lookup(pathname)).send(contents.toString());
-      return;
-    }
-    res.status(404).send('File not Found')
+    var pathname = path.normalize(filePath);
+    renderFile(res, pathname);
   });
 }
 
