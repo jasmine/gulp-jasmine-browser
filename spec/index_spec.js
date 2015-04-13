@@ -29,7 +29,7 @@ function describeWithoutTravisCI(text, callback) {
 describe('gulp-jasmine-browser', function() {
   it('can run tests via PhantomJS', function(done) {
     var gulpProcess = gulp('phantomjs', function(error, stdout, stderr) {
-      expect(error).toBe(null);
+      expect(error).toBeTruthy();
       expect(stderr).toBe('');
       expect(stdout).toContain('2 specs, 1 failure');
     });
@@ -49,7 +49,7 @@ describe('gulp-jasmine-browser', function() {
       });
       it('will re-use the server if available', function(done) {
         var gulpPhantomProcess = gulp('phantomjs', function(error, stdout, stderr) {
-          expect(error).toBe(null);
+          expect(error).toBeTruthy();
           expect(stderr).toBe('');
           expect(stdout).toContain('2 specs, 1 failure');
         });
