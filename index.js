@@ -91,8 +91,9 @@ exports.phantomjs = function(options) {
         cwd: path.resolve(__dirname, 'lib'),
         stdio: 'pipe'
       });
-      phantomProcess.on('close', function() {
+      phantomProcess.on('close', function(code) {
         server && server.close();
+        process.exit(code);
       });
       phantomProcess.stdout.pipe(process.stdout);
       phantomProcess.stderr.pipe(process.stderr);
