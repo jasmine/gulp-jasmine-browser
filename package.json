@@ -1,6 +1,7 @@
 {
   "name": "gulp-jasmine-browser",
   "version": "0.0.4",
+  "license": "MIT",
   "description": "",
   "keywords": [],
   "homepage": "https://github.com/jasmine/gulp-jasmine-browser",
