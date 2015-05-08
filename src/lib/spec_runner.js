@@ -6,30 +6,21 @@ var jasmineCore = require('jasmine-core');
 function resolveJasmineFiles(directoryProp, fileNamesProp) {
   var directory = jasmineCore.files[directoryProp];
   var fileNames = jasmineCore.files[fileNamesProp];
-  return fileNames.map(function(fileName) { return path.resolve(directory, fileName); });
+  return fileNames.map(fileName => path.resolve(directory, fileName));
 }
 
-function SpecRunner(options) {
+function SpecRunner(options = {}) {
   File.call(this, {path: '/specRunner.html', base: '/'});
 
-  options = Object(options);
   this.contents = new Buffer('<!DOCTYPE html>');
   this.files = {};
 
-  resolveJasmineFiles('path', 'cssFiles').forEach(function(fileName) {
-    this.inlineFile(fileName);
-  }, this);
-  resolveJasmineFiles('path', 'jsFiles').forEach(function(fileName) {
-    this.inlineFile(fileName);
-  }, this);
-  if (options.console) {
-    this.inlineFile('console.js');
-    this.inlineFile('console_boot.js');
-  } else {
-    resolveJasmineFiles('bootDir', 'bootFiles').forEach(function(fileName) {
-      this.inlineFile(fileName);
-    }, this);
-  }
+  var files = [].concat(
+    resolveJasmineFiles('path', 'cssFiles'),
+    resolveJasmineFiles('path', 'jsFiles'),
+    options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles')
+  );
+  files.forEach(fileName => this.inlineFile(fileName));
 }
 
 SpecRunner.prototype = Object.create(File.prototype);
@@ -41,22 +32,22 @@ SpecRunner.prototype.inlineFile = function(filePath) {
 
   this.contents = Buffer.concat([
     this.contents,
-    new Buffer('<' + fileExtension + '>' + fileContents + '</' + fileExtension + '>')
+    new Buffer(`<${fileExtension}>${fileContents}</${fileExtension}>`)
   ]);
   return this;
 };
 
 SpecRunner.prototype.addFile = function(filePath) {
-  if(this.files[filePath]) { return this; }
+  if (this.files[filePath]) return this;
   this.files[filePath] = true;
 
   var fileExtension = path.extname(filePath);
 
   var html = '';
   if (fileExtension === '.js') {
-    html = '<script src="' + filePath + '"></script>';
+    html = `<script src="${filePath}"></script>`;
   } else if (fileExtension === '.css') {
-    html = '<link href="' + filePath + '" rel="stylesheet" type="text/css"></link>';
+    html = `<link href="${filePath}" rel="stylesheet" type="text/css"></link>`;
   }
 
   this.contents = Buffer.concat([

@@ -1,32 +1,28 @@
-var fs = require('fs');
-var path = require('path');
-var childProcess = require('child_process');
-var selenium = require('selenium-standalone');
-var webdriverio = require('webdriverio');
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
-function gulp(task, callback) {
-  var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
-  var gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
-  return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
-    {timeout: 5000}, callback);
-
-}
-
-function withSelenium(callback) {
-  selenium.install(function() {
-    selenium.start(function(error, seleniumProcess) {
-      callback(seleniumProcess, webdriverio.remote().init());
-    });
-  });
-}
-
-function describeWithoutTravisCI(text, callback) {
-  callback();
-}
+require('./spec_helper');
 
 describe('gulp-jasmine-browser', function() {
+  var fs = require('fs');
+  var path = require('path');
+  var childProcess = require('child_process');
+  var selenium = require('selenium-standalone');
+  var webdriverio = require('webdriverio');
+
+  function gulp(task, callback) {
+    var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
+    var gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
+    return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
+      {timeout: 5000}, callback);
+
+  }
+
+  function withSelenium(callback) {
+    selenium.install(function() {
+      selenium.start(function(error, seleniumProcess) {
+        callback(seleniumProcess, webdriverio.remote().init());
+      });
+    });
+  }
+
   it('can run tests via PhantomJS', function(done) {
     var gulpProcess = gulp('phantomjs', function(error, stdout, stderr) {
       expect(error).toBeTruthy();

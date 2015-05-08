@@ -1,5 +1,3 @@
-'use strict';
-//(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
 var path = require('path');
 var childProcess = require('child_process');
 var mime = require('mime');
@@ -8,7 +6,9 @@ var through = require('through2');
 var express = require('express');
 var SpecRunner = require('./lib/spec_runner');
 
-var DEFAULT_JASMINE_PORT = 8888;
+/* eslint-disable no-unused-vars */
+const DEFAULT_JASMINE_PORT = 8888;
+/* eslint-enable no-unused-vars */
 
 function startNewServer(port, stream, files, callback) {
   function renderFile(res, pathname) {
@@ -21,7 +21,7 @@ function startNewServer(port, stream, files, callback) {
   }
   var app = express();
   var server = app.listen(port, function() {
-    console.log('Jasmine server listening on port ' + port);
+    console.log(`Jasmine server listening on port ${port}`);
     callback && callback(server, port);
     stream.next();
   });
@@ -35,10 +35,10 @@ function startNewServer(port, stream, files, callback) {
   });
 }
 
-function getServer(options, files, stream, callback) {
-  var port = options && options.port || DEFAULT_JASMINE_PORT;
+function getServer(files, stream, callback, options = {}) {
+  var {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
 
-  if(options && options.findOpenPort) {
+  if(findOpenPort) {
     portfinder.getPort(function(err, port) {
       if (err) return callback(err);
       startNewServer(port, stream, files, callback);
@@ -48,9 +48,7 @@ function getServer(options, files, stream, callback) {
   }
 }
 
-function createServer(options, callback) {
-  options = Object.create(options || {});
-
+function createServer(options = {}, callback = null) {
   var files = {};
   var stream = through.obj(function(file, encoding, done) {
     files[file.relative] = file.contents;
@@ -66,7 +64,7 @@ function createServer(options, callback) {
     stream.allowedToContinue = true;
   };
 
-  getServer(options, files, stream, callback);
+  getServer(files, stream, callback, options);
 
   return stream;
 }
@@ -80,11 +78,8 @@ exports.specRunner = function(options) {
   });
 };
 
-exports.phantomjs = function(options) {
-  options = Object.create(options || {});
-  if(typeof options.findOpenPort === 'undefined') {
-    options.findOpenPort = true;
-  }
+exports.phantomjs = function(options = {}) {
+  options = Object.assign({findOpenPort: true}, options);
   var stream = createServer(options, function(server, port) {
     stream.on('end', function() {
       var phantomProcess = childProcess.spawn('phantomjs', ['phantom_runner.js', port], {
