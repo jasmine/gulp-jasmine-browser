@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var cheerio = require('cheerio');
 var jasmineCore = require('jasmine-core');
-var SpecRunner = require('../lib/spec_runner');
+var SpecRunner = require('../src/lib/spec_runner');
 
 var jasmineJsFiles = jasmineCore.files.jsFiles.map(function(fileName) {
   return fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8');
@@ -10,11 +10,8 @@ var jasmineJsFiles = jasmineCore.files.jsFiles.map(function(fileName) {
 var jasmineCssFiles = jasmineCore.files.cssFiles.map(function(fileName) {
   return fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8');
 });
-var jasmineBootFiles = jasmineCore.files.bootFiles.map(function(fileName) {
-  return fs.readFileSync(path.resolve(jasmineCore.files.bootDir, fileName), 'utf8');
-});
-var consoleJs = fs.readFileSync(path.resolve(__dirname, '..', 'lib', 'console.js'), 'utf8');
-var consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', 'lib', 'console_boot.js'), 'utf8');
+var consoleJs = fs.readFileSync(path.resolve(__dirname, '..', 'src', 'lib', 'console.js'), 'utf8');
+var consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', 'src', 'lib', 'console_boot.js'), 'utf8');
 
 describe('SpecRunner', function() {
   var specRunnerFile;

@@ -17,7 +17,7 @@ function startNewServer(port, stream, files, callback) {
       res.status(200).type(mime.lookup(pathname)).send(contents.toString());
       return;
     }
-    res.status(404).send('File not Found')
+    res.status(404).send('File not Found');
   }
   var app = express();
   var server = app.listen(port, function() {
@@ -60,7 +60,7 @@ function createServer(options, callback) {
     stream.next = function() {
       stream.allowedToContinue = true;
       done();
-    }
+    };
   });
   stream.next = function() {
     stream.allowedToContinue = true;

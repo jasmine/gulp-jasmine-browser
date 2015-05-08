@@ -6,12 +6,12 @@ var webdriverio = require('webdriverio');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-function gulp(task, callback) {  
+function gulp(task, callback) {
   var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
   var gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
-  return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '), 
-    {timeout: 5000}, callback);  
-  
+  return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
+    {timeout: 5000}, callback);
+
 }
 
 function withSelenium(callback) {
@@ -68,7 +68,7 @@ describe('gulp-jasmine-browser', function() {
         return webdriver
           .url('http://localhost:8888')
           .getText('.bar.failed', function(error, text) {
-            expect(text).toBe('2 specs, 1 failure')
+            expect(text).toBe('2 specs, 1 failure');
           })
           .end(function() {
             seleniumServer.kill();
@@ -85,7 +85,7 @@ describe('gulp-jasmine-browser', function() {
           .url('http://localhost:8888')
           .refresh()
           .getText('.bar.failed', function(error, text) {
-            expect(text).toBe('2 specs, 1 failure')
+            expect(text).toBe('2 specs, 1 failure');
           })
           .end(function() {
             seleniumServer.kill();
@@ -96,14 +96,8 @@ describe('gulp-jasmine-browser', function() {
 
     it('supports webpack with watch: true', function(done) {
       var mutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
-      var oldSpec = "" +
-        "it('makes a basic failing assertion'," +
-        "function() { expect(true).toBe(false); " +
-        "});";
-      var newSpec = "" +
-        "it('makes a basic passing assertion'," +
-        "function() { expect(true).toBe(true); " +
-        "});";
+      var oldSpec = `it('makes a basic failing assertion', function() { expect(true).toBe(false); });`;
+      var newSpec = `it('makes a basic passing assertion', function() { expect(true).toBe(true); });`;
       var gulpProcess = gulp('webpack-server');
       gulpProcess.on('close', function() {
         fs.writeSync(fs.openSync(mutableSpec, 'w'), oldSpec);
@@ -111,9 +105,9 @@ describe('gulp-jasmine-browser', function() {
       });
       withSelenium(function(seleniumServer, webdriver) {
 
-        webdriver.addCommand("waitForWebpack", function(cb) {
+        webdriver.addCommand('waitForWebpack', function(cb) {
           gulpProcess.stdout.on('data', function(chunk) {
-            if (chunk.match(/Webpack is watching for changes/)) {
+            if (chunk.match(/webpack is watching for changes/i)) {
               cb();
             }
           });
@@ -122,7 +116,7 @@ describe('gulp-jasmine-browser', function() {
         webdriver
           .url('http://localhost:8888')
           .getText('.bar.failed', function(error, text) {
-            expect(text).toBe('1 spec, 1 failure')
+            expect(text).toBe('1 spec, 1 failure');
           })
           .call(function() {
             fs.writeSync(fs.openSync(mutableSpec, 'w'), newSpec);
@@ -130,7 +124,7 @@ describe('gulp-jasmine-browser', function() {
           .waitForWebpack()
           .refresh()
           .getText('.bar.passed', function(error, text) {
-            expect(text).toBe('1 spec, 0 failures')
+            expect(text).toBe('1 spec, 0 failures');
           })
           .end(function() {
             seleniumServer.kill();

@@ -15,7 +15,7 @@
   var consoleReporter = new jasmine.ConsoleReporter({
     showColors: true,
     timer: new jasmine.Timer(),
-    print: function(message) { console.log(message) },
+    print: function(message) { console.log(message); },
     onComplete: callPhantom
   });
 
