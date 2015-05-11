@@ -67,6 +67,25 @@ gulp.task('jasmine', function() {
 });
 ```
 
+When using webpack, it is helpful to delay the jasmine server when the webpack bundle becomes invalid (to prevent serving
+javascript that is out of date).  Adding the plugin to your webpack configuration, and adding the whenReady function to
+the server configuration enables this behavior. 
+
+```js
+var gulp = require('gulp');
+var jasmineBrowser = require('gulp-jasmine-browser');
+var webpack = require('gulp-webpack');
+
+gulp.task('jasmine', function() {
+  var JasminePlugin = require('gulp-jasmine-browser/webpack/jasmine-plugin');
+  var plugin = new JasminePlugin();
+  return gulp.src('spec/**/*_spec.js'])
+    .pipe(webpack({watch: true, output: {filename: 'spec.js'}, plugins: [plugin]}))
+    .pipe(jasmineBrowser.specRunner())
+    .pipe(jasmineBrowser.server({whenReady: plugin.whenReady}));
+});
+```
+
 ## Development
 ### Getting Started
 The application requires the following external dependencies:
