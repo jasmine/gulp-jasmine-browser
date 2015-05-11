@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "babel": "^5.2.17",
+    "babel-eslint": "^3.1.1",
     "cheerio": "^0.18.0",
     "del": "^1.1.1",
     "eslint": "^0.20.0",
@@ -34,14 +35,17 @@
     "gulp-webpack": "^1.3.0",
     "jasmine": "^2.2.0",
     "merge-stream": "^0.1.7",
+    "methods": "^1.1.1",
     "npm": "^2.9.1",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.0",
     "selenium-standalone": "^4.2.0",
+    "supertest": "git://github.com/visionmedia/supertest.git#bf2f5e7c55030b46995a85ada42c21d285f25716",
     "webdriverio": "^2.4.5"
   },
   "dependencies": {
     "babel-runtime": "^5.2.17",
+    "es6-promisify": "^1.1.1",
     "express": "^4.12.2",
     "jasmine-core": "^2.2.0",
     "mime": "^1.3.4",
@@ -50,7 +54,8 @@
     "vinyl": "^0.4.6"
   },
   "peerDependencies": {
-    "gulp": "^3.8.11"
+    "gulp": "^3.8.11",
+    "gulp-util": "^3.0.4"
   },
   "scripts": {
     "test": "gulp"

@@ -4,6 +4,9 @@ function describeWithoutTravisCI(text, callback) {
   callback();
 }
 
+var Deferred = require('./support/deferred');
+
 Object.assign(global, {
-  describeWithoutTravisCI
+  describeWithoutTravisCI,
+  Deferred
 });
