@@ -79,7 +79,7 @@ describe('gulp-jasmine-browser', function() {
     done();
   });
 
-  fdescribe('when the file is mutated', function() {
+  describe('when the file is mutated', function() {
     const oldSpec = `it('makes a basic failing assertion', function() { expect(true).toBe(false); });`;
     const newSpec = `it('makes a basic passing assertion', function() { expect(true).toBe(true); });`;
     var pathToMutableSpec;
