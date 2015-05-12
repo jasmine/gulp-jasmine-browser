@@ -61,7 +61,7 @@ describe('gulp-jasmine-browser', function() {
     done();
   });
 
-  describe('when a server is already running', function() {
+  xdescribe('when a server is already running', function() {
     beforeEach(function(done) {
       var {process: {stdout}} = gulp('webpack-server');
       stdout.on('data', function(chunk) {
