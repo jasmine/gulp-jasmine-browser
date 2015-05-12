@@ -48,7 +48,9 @@ describe('gulp-jasmine-browser', function() {
   }
 
   afterEach(async function(done) {
+    console.log(4444);
     await* processes.filter(p => p.webdriver).map(p => p.webdriver.end());
+    console.log(5555);
     await* processes.filter(p => p.process).map(p => (p.process.kill(), p.closed));
     done();
   });
@@ -59,23 +61,6 @@ describe('gulp-jasmine-browser', function() {
     expect(stderr).toBe('');
     expect(stdout).toContain('2 specs, 1 failure');
     done();
-  });
-
-  xdescribe('when a server is already running', function() {
-    beforeEach(function(done) {
-      var {process: {stdout}} = gulp('webpack-server');
-      stdout.on('data', function(chunk) {
-        if (chunk.match(/listening on port/)) done();
-      });
-    });
-
-    it('will re-use the server if available', async function(done) {
-      var {error, stdout, stderr} = await gulp('phantomjs').completed;
-      expect(error).toBeTruthy();
-      expect(stderr).toBe('');
-      expect(stdout).toContain('2 specs, 1 failure');
-      done();
-    });
   });
 
   it('allows running tests in a browser', async function(done) {
@@ -94,7 +79,7 @@ describe('gulp-jasmine-browser', function() {
     done();
   });
 
-  xdescribe('when the file is mutated', function() {
+  fdescribe('when the file is mutated', function() {
     const oldSpec = `it('makes a basic failing assertion', function() { expect(true).toBe(false); });`;
     const newSpec = `it('makes a basic passing assertion', function() { expect(true).toBe(true); });`;
     var pathToMutableSpec;
@@ -110,14 +95,17 @@ describe('gulp-jasmine-browser', function() {
     it('supports webpack with watch: true', async function(done) {
       var {process: gulpProcess} = gulp('webpack-server');
 
+      console.log(1111);
       var {webdriver} = await getWebdriver();
       webdriver.addCommand('waitForWebpack', function(cb) {
         gulpProcess.stdout.on('data', chunk => chunk.match(/webpack is watching for changes/i) && cb());
       });
 
+      console.log(2222);
       var text = await webdriver.url('http://localhost:8888').getText('.bar.failed');
       expect(text).toBe('1 spec, 1 failure');
       fs.writeFileSync(pathToMutableSpec, newSpec);
+      console.log(3333);
       text = await webdriver.waitForWebpack().refresh().getText('.bar.passed');
       expect(text).toBe('1 spec, 0 failures');
       done();
