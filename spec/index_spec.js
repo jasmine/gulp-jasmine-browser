@@ -102,7 +102,7 @@ describe('gulp-jasmine-browser', function() {
       });
 
       console.log(2222);
-      var text = await webdriver.url('http://localhost:8888').refresh().getText('.bar.failed');
+      var text = await webdriver.url('http://localhost:8888').getText('.bar.failed');
       expect(text).toBe('1 spec, 1 failure');
       fs.writeFileSync(pathToMutableSpec, newSpec);
       console.log(3333);
