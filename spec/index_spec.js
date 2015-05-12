@@ -49,7 +49,7 @@ describe('gulp-jasmine-browser', function() {
 
   afterEach(async function(done) {
     console.log(4444);
-    await* processes.filter(p => p.webdriver).map(p => p.webdriver.end());
+    await* processes.filter(p => p.webdriver).map(p => p.webdriver.endAll());
     console.log(5555);
     await* processes.filter(p => p.process).map(p => (p.process.kill(), p.closed));
     done();
