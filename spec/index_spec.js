@@ -23,16 +23,7 @@ describe('gulp-jasmine-browser', function() {
     var process = childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
       {timeout}, (error, stdout, stderr) => resolveCompleted({error, stdout, stderr}));
 
-    var closed = new Promise(function(resolve) {
-      process.on('close', function() {
-        console.log('close');
-        resolve();
-      });
-      process.on('exit', function() {
-        console.log('exit');
-        resolve();
-      });
-    });
+    var closed = new Promise(resolve => process.on('close', resolve));
 
     processes.push({process, closed});
 
@@ -48,7 +39,7 @@ describe('gulp-jasmine-browser', function() {
         selenium.start(function(error, process) {
           if (error) return reject(error);
           processes.push({process, closed: new Promise(res => process.on('close', res))});
-          var webdriver = webdriverio.remote().init();
+          var webdriver = webdriverio.remote({desiredCapabilities: {browserName: 'phantomjs'}}).init();
           processes.push({webdriver});
           resolve({webdriver});
         });
