@@ -28,12 +28,8 @@ describe('gulp-jasmine-browser', function() {
         console.log('close');
         resolve();
       });
-      process.on('SIGTERM', function() {
-        console.log('SIGTERM');
-        resolve();
-      });
-      process.on('uncaughtException', function() {
-        console.log('uncaughtException');
+      process.on('exit', function() {
+        console.log('exit');
         resolve();
       });
     });
