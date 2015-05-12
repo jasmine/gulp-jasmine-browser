@@ -1,6 +1,9 @@
 require('./spec_helper');
 
+
 describe('gulp-jasmine-browser', function() {
+  const timeout = 5000 * 2;
+
   var fs = require('fs');
   var path = require('path');
   var childProcess = require('child_process');
@@ -11,7 +14,7 @@ describe('gulp-jasmine-browser', function() {
     var gulpPath = path.resolve('node_modules', '.bin', 'gulp');
     var gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
     return childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
-      {timeout: 5000}, callback);
+      {timeout}, callback);
 
   }
 
