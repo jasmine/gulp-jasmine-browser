@@ -39,7 +39,7 @@ describe('gulp-jasmine-browser', function() {
         selenium.start(function(error, process) {
           if (error) return reject(error);
           processes.push({process, closed: new Promise(res => process.on('close', res))});
-          var webdriver = webdriverio.remote({desiredCapabilities: {browserName: 'phantomjs'}}).init();
+          var webdriver = webdriverio.remote().init();
           processes.push({webdriver});
           resolve({webdriver});
         });
@@ -68,6 +68,7 @@ describe('gulp-jasmine-browser', function() {
     var {webdriver} = await getWebdriver();
     var text = await webdriver.url('http://localhost:8888').getText('.bar.failed');
     expect(text).toBe('2 specs, 1 failure');
+    await webdriver.close();
     done();
   });
 
@@ -76,6 +77,7 @@ describe('gulp-jasmine-browser', function() {
     var {webdriver} = await getWebdriver();
     var text = await webdriver.url('http://localhost:8888').refresh().getText('.bar.failed');
     expect(text).toBe('2 specs, 1 failure');
+    await webdriver.close();
     done();
   });
 
@@ -108,6 +110,7 @@ describe('gulp-jasmine-browser', function() {
       console.log(3333);
       text = await webdriver.waitForWebpack().refresh().getText('.bar.passed');
       expect(text).toBe('1 spec, 0 failures');
+      await webdriver.close();
       done();
     });
   });
