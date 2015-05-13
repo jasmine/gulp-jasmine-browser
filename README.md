@@ -18,12 +18,14 @@ var jasmineBrowser = require('gulp-jasmine-browser');
 gulp.task('jasmine', function() {
   return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner())
-    .pipe(jasmineBrowser.server());
+    .pipe(jasmineBrowser.server({port: 8888}));
 });
 ```
 In `gulp.src` include all files you need for testing other than jasmine itself.
 This should include your spec files, and may also include your production JavaScript and
 CSS files.
+
+The jasmine server will run on the `port` given to `server`, or will default to port 8888.
 
 ### Run jasmine tests headlessly
 
