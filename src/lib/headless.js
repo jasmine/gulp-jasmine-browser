@@ -55,7 +55,6 @@ function headless(options = {}) {
   options = Object.assign({findOpenPort: true}, options);
   var {driver = 'phantomjs'} = options;
   var {command, runner, callback} = drivers[driver in drivers ? driver : '_default']();
-  console.log(command, runner);
   var stream = createServer(options, function(server, port) {
     stream.on('end', function() {
       var phantomProcess = childProcess.spawn(command, [runner, port], {
