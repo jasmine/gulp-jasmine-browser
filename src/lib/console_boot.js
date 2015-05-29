@@ -12,11 +12,14 @@
 
   extend(window, jasmineInterface);
 
+  var buffer = '';
   var consoleReporter = new jasmine.ConsoleReporter({
     showColors: true,
     timer: new jasmine.Timer(),
-    print: function(message) { console.log(message); },
-    onComplete: callPhantom
+    print: function(message) { buffer += message; console.log(message); },
+    onComplete: function(success) {
+      callPhantom(JSON.stringify({success: success, buffer: buffer}));
+    }
   });
 
   env.addReporter(consoleReporter);

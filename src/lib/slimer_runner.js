@@ -5,12 +5,9 @@ var args = system.args;
 var port = args[1] || 8888;
 
 var page = webPage.create();
-page.onConsoleMessage = function(message) {
-  system.stdout.write(message);
-};
 page.onCallback = function(json) {
-  var result = JSON.parse(json);
-  phantom.exit(result.success ? 0 : 1);
+  console.log(json);
+  slimer.exit();
 };
 
 page.open('http://localhost:' + port);

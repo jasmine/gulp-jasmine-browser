@@ -61,6 +61,14 @@ describe('gulp-jasmine-browser', function() {
     done();
   });
 
+  it('can run tests via SlimerJS', async function(done) {
+    var {error, stdout, stderr} = await gulp('slimerjs').completed;
+    expect(error).toBeTruthy();
+    expect(stderr).toBe('');
+    expect(stdout).toContain('2 specs, 1 failure');
+    done();
+  });
+
   describeWithoutTravisCI('when running in a browser', function() {
     it('allows running tests in a browser', async function(done) {
       gulp('server');

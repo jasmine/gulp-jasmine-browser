@@ -51,6 +51,7 @@ If you are using Webpack or Browserify, you may want to use their watching mecha
 
 In `gulpfile.js`
 
+For PhantomJs
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
@@ -58,14 +59,29 @@ var jasmineBrowser = require('gulp-jasmine-browser');
 gulp.task('jasmine-phantom', function() {
   return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.phantomjs());
+    .pipe(jasmineBrowser.headless());
 });
 ```
 
-Note the `{console: true}` passed into specRunner.
-
 GulpJasmineBrowser assumes that `phantomjs` is already installed and in your path.
 It is only tested with PhantomJS 2.
+
+For SlimerJs
+```js
+var gulp = require('gulp');
+var jasmineBrowser = require('gulp-jasmine-browser');
+
+gulp.task('jasmine-phantom', function() {
+  return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
+    .pipe(jasmineBrowser.specRunner({console: true}))
+    .pipe(jasmineBrowser.headless({driver: 'slimerjs'}));
+});
+```
+
+To use this driver, the SlimerJS npm [package](https://www.npmjs.com/package/slimerjs) must be installed in your project.
+
+Note the `{console: true}` passed into specRunner.
+
 
 
 ### Usage with Webpack

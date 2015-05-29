@@ -8,6 +8,12 @@ gulp.task('phantomjs', function() {
     .pipe(jasmineBrowser.phantomjs());
 });
 
+gulp.task('slimerjs', function() {
+  return gulp.src('dummy_spec.js')
+    .pipe(jasmineBrowser.specRunner({console: true}))
+    .pipe(jasmineBrowser.slimerjs());
+});
+
 gulp.task('server', function() {
   return gulp.src('dummy_spec.js')
     .pipe(jasmineBrowser.specRunner({console: false}))
