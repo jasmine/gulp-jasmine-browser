@@ -19,6 +19,7 @@
     print: function(message) { buffer += message; console.log(message); },
     onComplete: function(success) {
       callPhantom(JSON.stringify({success: success, buffer: buffer}));
+      buffer = '';
     }
   });
 
