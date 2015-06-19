@@ -63,7 +63,9 @@ gulp.task('jasmine-phantom', function() {
 });
 ```
 
-GulpJasmineBrowser assumes that `phantomjs` is already installed and in your path.
+To use this driver, the PhantomJS npm [package](https://www.npmjs.com/package/phantomjs) must be installed in your project.
+
+GulpJasmineBrowser assumes that if the package is not installed `phantomjs` is already installed and in your path.
 It is only tested with PhantomJS 2.
 
 For SlimerJs
@@ -95,7 +97,7 @@ In `gulpfile.js`
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
-var webpack = require('gulp-webpack');
+var webpack = require('webpack-stream');
 
 gulp.task('jasmine', function() {
   return gulp.src('spec/**/*_spec.js'])
@@ -112,7 +114,7 @@ the server configuration enables this behavior.
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
-var webpack = require('gulp-webpack');
+var webpack = require('webpack-stream');
 
 gulp.task('jasmine', function() {
   var JasminePlugin = require('gulp-jasmine-browser/webpack/jasmine-plugin');

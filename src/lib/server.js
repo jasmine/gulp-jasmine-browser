@@ -1,6 +1,7 @@
 var express = require('express');
 var mime = require('mime');
 var path = require('path');
+var favicon = require('serve-favicon');
 
 function log(message) {
   try {
@@ -28,6 +29,9 @@ function renderFile(res, files, pathname, whenReady) {
 var Server = {
   createServer(files, options = {}) {
     var app = express();
+
+    app.use(favicon(path.join(__dirname, '..', 'public', 'jasmine_favicon.png')));
+
     app.get('/', function(req, res) {
       var {whenReady = () => Promise.resolve()} = options;
       renderFile(res, files, 'specRunner.html', whenReady);
