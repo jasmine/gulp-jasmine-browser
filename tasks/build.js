@@ -13,7 +13,7 @@ gulp.task('clean', function(callback) {
 gulp.task('babel', function() {
   return mergeStream(
     gulp.src('src/**/*.js').pipe(plugins.babel()).pipe(plugins.header(COPYRIGHT)),
-    gulp.src(['LICENSE', 'README.md', 'package.json'])
+    gulp.src(['LICENSE.md', 'README.md', 'package.json', 'public/jasmine_favicon.png'], {base: './'})
   ).pipe(gulp.dest('dist'));
 });
 
