@@ -27,7 +27,9 @@ function getServer(files, options = {}) {
   return listen(port, files, options);
 }
 
-function createServer(options, lazy) {
+function createServer(options) {
+  var {driver = 'phantomjs'} = options;
+  var {command, runner, callback} = drivers[driver in drivers ? driver : '_default']();
   var stream = lazypipe().pipe(() => {
     return reduce(function(memo, file) {
       memo[file.relative] = file.contents;
@@ -38,8 +40,17 @@ function createServer(options, lazy) {
       var {server, port} = await getServer(files, options);
       callback(null, {server, port});
     });
+  }).pipe(() => {
+    return es.through(function({server, port}) {
+      var phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
+      ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
+      callback(server, phantomProcess, success => {
+        server.close();
+        if (!success) this.emit('error', 'Tests failed');
+        this.emit('end');
+      });
+    }, noop);
   });
-  if (lazy) stream = stream.pipe(() => lazy);
   return stream();
 }
 
@@ -56,18 +67,7 @@ function createServerWatch(options) {
 }
 
 function headless(options = {}) {
-  options = {findOpenPort: true, ...options};
-  var {driver = 'phantomjs'} = options;
-  var {command, runner, callback} = drivers[driver in drivers ? driver : '_default']();
-  return createServer(options, es.through(function({server, port}) {
-    var phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
-    ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
-    callback(server, phantomProcess, success => {
-      server.close();
-      if (!success) this.emit('error', 'Tests failed');
-      this.emit('end');
-    });
-  }, noop));
+  return createServer({findOpenPort: true, ...options});
 }
 
 module.exports = {
