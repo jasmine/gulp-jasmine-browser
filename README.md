@@ -1,4 +1,7 @@
 # gulp-jasmine-browser
+
+Run jasmine tests in a browser or headless browser using gulp.
+
 [![Build Status](https://travis-ci.org/jasmine/gulp-jasmine-browser.svg?branch=master)](https://travis-ci.org/jasmine/gulp-jasmine-browser)
 
 ## Installing

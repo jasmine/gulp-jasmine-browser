@@ -40,6 +40,7 @@
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.0",
     "selenium-standalone": "^4.2.0",
+    "slimerjs": "^0.9.6",
     "supertest": "^1.0.1",
     "webdriverio": "^2.4.5",
     "webpack-stream": "^2.0.0"
