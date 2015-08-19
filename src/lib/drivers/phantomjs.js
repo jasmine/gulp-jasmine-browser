@@ -8,10 +8,10 @@ module.exports = function() {
       }
     },
     runner: 'phantom_runner.js',
-    callback(server, phantomProcess) {
+    callback(server, phantomProcess, done) {
       phantomProcess.once('close', function(code) {
         server && server.close();
-        process.exit(code);
+        done(code);
       });
       phantomProcess.stdout.pipe(process.stdout);
       phantomProcess.stderr.pipe(process.stderr);

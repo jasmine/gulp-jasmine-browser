@@ -9,12 +9,12 @@ module.exports = function() {
       }
     },
     runner: 'slimer_runner.js',
-    callback(server, phantomProcess) {
+    callback(server, phantomProcess, done) {
       phantomProcess.stdout.pipe(es.wait(function(err, body) {
-        if (err) process.exit(err);
+        if (err) return done(err);
         var {success, buffer} = JSON.parse(body);
         console.log(buffer);
-        process.exit(success ? 0 : 1);
+        done(success);
       }));
     }
   };

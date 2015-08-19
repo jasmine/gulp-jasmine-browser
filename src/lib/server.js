@@ -47,13 +47,13 @@ var Server = {
     return app;
   },
 
-  listen(port, stream, files, callback, options = {}) {
-    var server = Server.createServer(files, options).listen(port, function() {
-      log(`Jasmine server listening on port ${port}`);
-      callback && callback(server, port);
-      stream.next();
+  listen(port, files, options = {}) {
+    return new Promise(resolve => {
+      var server = Server.createServer(files, options).listen(port, function() {
+        log(`Jasmine server listening on port ${port}`);
+        resolve({server, port});
+      });
     });
-    return server;
   }
 };
 
