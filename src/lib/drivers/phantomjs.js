@@ -11,7 +11,7 @@ module.exports = function() {
     callback(server, phantomProcess, done) {
       phantomProcess.once('close', function(code) {
         server && server.close();
-        done(code);
+        done(!code);
       });
       phantomProcess.stdout.pipe(process.stdout);
       phantomProcess.stderr.pipe(process.stderr);

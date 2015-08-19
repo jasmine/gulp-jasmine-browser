@@ -54,7 +54,8 @@ describe('gulp-jasmine-browser', function() {
   });
 
   it('can run tests via PhantomJS', async function(done) {
-    var {stdout, stderr} = await gulp('phantomjs').completed;
+    var {error, stdout, stderr} = await gulp('phantomjs').completed;
+    expect(error).toBeTruthy();
     expect(stderr).toBe('');
     expect(stdout).toContain('2 specs, 1 failure');
     done();
