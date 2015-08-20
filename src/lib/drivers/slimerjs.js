@@ -9,13 +9,16 @@ module.exports = function() {
       }
     },
     runner: 'slimer_runner.js',
-    callback(server, phantomProcess, done) {
-      phantomProcess.stdout.pipe(es.wait(function(err, body) {
-        if (err) return done(err);
-        var {success, buffer} = JSON.parse(body);
-        console.log(buffer);
-        done(success);
-      }));
+    run(phantomProcess) {
+      return new Promise((resolve, reject) => {
+        phantomProcess.stdout.pipe(es.wait(function(err, body) {
+          if (err) return reject(err);
+          var {success, buffer} = JSON.parse(body);
+          console.log(buffer);
+          if (!success) return reject(success);
+          resolve(success);
+        }));
+      });
     }
   };
 };

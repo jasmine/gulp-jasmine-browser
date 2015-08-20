@@ -8,13 +8,15 @@ module.exports = function() {
       }
     },
     runner: 'phantom_runner.js',
-    callback(server, phantomProcess, done) {
-      phantomProcess.once('close', function(code) {
-        server && server.close();
-        done(!code);
+    run(phantomProcess) {
+      return new Promise((resolve, reject) => {
+        phantomProcess.once('close', function(code) {
+          if (code) return reject(code);
+          resolve(code);
+        });
+        phantomProcess.stdout.pipe(process.stdout);
+        phantomProcess.stderr.pipe(process.stderr);
       });
-      phantomProcess.stdout.pipe(process.stdout);
-      phantomProcess.stderr.pipe(process.stderr);
     }
   };
 };

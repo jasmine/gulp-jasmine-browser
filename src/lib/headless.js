@@ -29,7 +29,7 @@ function getServer(files, options = {}) {
 
 function createServer(options) {
   var {driver = 'phantomjs'} = options;
-  var {command, runner, callback} = drivers[driver in drivers ? driver : '_default']();
+  var {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
   var stream = lazypipe().pipe(() => {
     return reduce(function(memo, file) {
       memo[file.relative] = file.contents;
@@ -41,14 +41,19 @@ function createServer(options) {
       callback(null, {server, port});
     });
   }).pipe(() => {
-    return es.through(function({server, port}) {
+    return es.through(async function({server, port}) {
+      this.pause();
       var phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
-      callback(server, phantomProcess, success => {
+      try {
+        await run(phantomProcess);
+      } catch(e) {
+        this.emit('error', 'Tests failed');
+      } finally{
+        this.resume();
         server.close();
-        if (!success) this.emit('error', 'Tests failed');
         this.emit('end');
-      });
+      }
     }, noop);
   });
   return stream();
