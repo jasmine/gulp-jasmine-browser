@@ -4,11 +4,11 @@ const lazypipe = require('lazypipe');
 const {listen} = require('./server');
 const path = require('path');
 const portfinder = require('portfinder');
-const promisify = require('es6-promisify');
+const thenify = require('thenify');
 const reduce = require('stream-reduce');
 const once = require('lodash.once');
 
-const getPort = promisify(portfinder.getPort);
+const getPort = thenify(portfinder.getPort);
 const noop = () => {};
 
 /* eslint-disable no-unused-vars */
