@@ -1,7 +1,7 @@
 require('../spec_helper');
 
 describe('Server', function() {
-  var app, createServer, files, request;
+  let app, createServer, files, request;
   beforeEach(function() {
     request = require('../support/supertest_promisified');
     createServer = require('../../dist/lib/server').createServer;
@@ -17,7 +17,7 @@ describe('Server', function() {
 
     describe('GET /', function() {
       it('renders the spec runner', async function(done) {
-        var res = await request(app).get('/').expect(200);
+        const res = await request(app).get('/').expect(200);
         expect(res.text).toContain('The Spec Runner');
         done();
       });
@@ -30,7 +30,7 @@ describe('Server', function() {
         });
 
         it('renders the file', async function(done) {
-          var res = await request(app).get('/foo.js').expect(200);
+          const res = await request(app).get('/foo.js').expect(200);
           expect(res.text).toContain('Foo Content');
           done();
         });
@@ -38,7 +38,7 @@ describe('Server', function() {
 
       describe('with a file that does not exist', function() {
         it('returns 404', async function(done) {
-          var res = await request(app).get('/bar.js');
+          const res = await request(app).get('/bar.js');
           expect(res.statusCode).toBe(404);
           done();
         });
@@ -47,7 +47,7 @@ describe('Server', function() {
   });
 
   describe('when the server is passed whenReady', function() {
-    var whenReady;
+    let whenReady;
     beforeEach(function() {
       whenReady = new Deferred();
       app = createServer(files, {whenReady: () => whenReady});
@@ -61,7 +61,7 @@ describe('Server', function() {
             whenReady.resolve();
           }, 100);
 
-          var res = await request(app).get('/').expect(200);
+          const res = await request(app).get('/').expect(200);
           expect(res.text).toContain('The New Version');
           done();
         });
@@ -78,7 +78,7 @@ describe('Server', function() {
             whenReady.resolve();
           }, 200);
 
-          var res = await request(app).get('/').expect(200);
+          const res = await request(app).get('/').expect(200);
           expect(res.text).toContain('The Good Version');
           done();
         });

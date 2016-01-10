@@ -1,11 +1,11 @@
-var Deferred = function() {
-  var resolver, rejector;
-  var promise = new Promise(function(res, rej) {
+const Deferred = function() {
+  let resolver, rejector;
+  const promise = new Promise(function(res, rej) {
     resolver = res;
     rejector = rej;
   });
 
-  var wrapper = Object.assign(promise, {
+  const wrapper = Object.assign(promise, {
     resolve(...args) {
       resolver(...args);
       return wrapper;

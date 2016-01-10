@@ -1,10 +1,10 @@
-var privates = new WeakMap();
+const privates = new WeakMap();
 
 class JasminePlugin {
   constructor() {
-    var resolve = function() {};
-    var reject = function() {};
-    var promise = new Promise(function(res, rej) {
+    let resolve = function() {};
+    let reject = function() {};
+    const promise = new Promise(function(res, rej) {
       resolve = res;
       reject = rej;
     });
@@ -17,7 +17,7 @@ class JasminePlugin {
   }
   apply(compiler) {
     compiler.plugin('invalid', () => {
-      var {resolve, reject, promise} = privates.get(this);
+      let {resolve, reject, promise} = privates.get(this);
       reject();
       promise = new Promise(function(res, rej) {
         resolve = res;

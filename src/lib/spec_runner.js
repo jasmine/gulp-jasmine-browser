@@ -1,17 +1,17 @@
-var fs = require('fs');
-var path = require('path');
-var File = require('vinyl');
-var jasmineCore = require('jasmine-core');
+const fs = require('fs');
+const path = require('path');
+const File = require('vinyl');
+const jasmineCore = require('jasmine-core');
 
 function resolveJasmineFiles(directoryProp, fileNamesProp) {
-  var directory = jasmineCore.files[directoryProp];
-  var fileNames = jasmineCore.files[fileNamesProp];
+  const directory = jasmineCore.files[directoryProp];
+  const fileNames = jasmineCore.files[fileNamesProp];
   return fileNames.map(fileName => path.resolve(directory, fileName));
 }
 
 const inlineTagExtensions = {'.css': 'style', '.js': 'script'};
 
-var privates = new WeakMap();
+const privates = new WeakMap();
 class SpecRunner extends File {
   constructor(options = {}) {
     super({path: '/specRunner.html', base: '/'});
@@ -19,7 +19,7 @@ class SpecRunner extends File {
     this.contents = new Buffer('<!DOCTYPE html>');
     privates.set(this, {files: new Set()});
 
-    var files = [].concat(
+    const files = [].concat(
       resolveJasmineFiles('path', 'cssFiles'),
       resolveJasmineFiles('path', 'jsFiles'),
       options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles')
@@ -28,8 +28,8 @@ class SpecRunner extends File {
   }
 
   inlineFile(filePath) {
-    var fileContents = fs.readFileSync(path.resolve(__dirname, filePath), {encoding: 'utf8'});
-    var fileExtension = inlineTagExtensions[path.extname(filePath)];
+    const fileContents = fs.readFileSync(path.resolve(__dirname, filePath), {encoding: 'utf8'});
+    const fileExtension = inlineTagExtensions[path.extname(filePath)];
 
     this.contents = Buffer.concat([
       this.contents,
@@ -39,13 +39,13 @@ class SpecRunner extends File {
   }
 
   addFile(filePath) {
-    var {files} = privates.get(this);
+    const {files} = privates.get(this);
     if (files.has(filePath)) return this;
     files.add(filePath);
 
-    var fileExtension = path.extname(filePath);
+    const fileExtension = path.extname(filePath);
 
-    var html = '';
+    let html = '';
     if (fileExtension === '.js') {
       html = `<script src="${filePath}"></script>`;
     } else if (fileExtension === '.css') {
