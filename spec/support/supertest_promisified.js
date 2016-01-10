@@ -1,5 +1,5 @@
-var methods = require('methods');
-var supertest = require('supertest');
+const methods = require('methods');
+const supertest = require('supertest');
 
 function then(onFulfilled, onRejected) {
   return new Promise(function(resolve, reject) {
@@ -11,7 +11,7 @@ function then(onFulfilled, onRejected) {
 }
 
 module.exports = function(...args) {
-  var request = supertest(...args);
+  const request = supertest(...args);
   return methods.reduce(function(wrapped, method) {
     return Object.assign(wrapped, {
       [method]() {

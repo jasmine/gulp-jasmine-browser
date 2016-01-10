@@ -1,6 +1,6 @@
-var gulp = require('gulp');
-var webpack = require('webpack-stream');
-var jasmineBrowser = require('../../dist/index');
+const gulp = require('gulp');
+const webpack = require('webpack-stream');
+const jasmineBrowser = require('../../dist/index');
 
 gulp.task('phantomjs', function() {
   return gulp.src('dummy_spec.js')

@@ -1,18 +1,18 @@
 require('../spec_helper');
 
 describe('JasminePlugin', function() {
-  var subject, compiler;
+  let subject, compiler;
   beforeEach(function() {
-    var JasminePlugin = require('../../dist/webpack/jasmine-plugin');
+    const JasminePlugin = require('../../dist/webpack/jasmine-plugin');
     subject = new JasminePlugin();
-    var {EventEmitter} = require('events');
+    const {EventEmitter} = require('events');
     compiler = new EventEmitter();
     compiler.plugin = compiler.on;
     subject.apply(compiler);
   });
 
   describe('#whenReady', function() {
-    var doneSpy, failSpy;
+    let doneSpy, failSpy;
     beforeEach(function() {
       doneSpy = jasmine.createSpy('done');
       failSpy = jasmine.createSpy('fail');
@@ -52,7 +52,7 @@ describe('JasminePlugin', function() {
     describe('when the invalid event is emitted', function() {
       it('rejects the promise', async function(done) {
         try {
-          var whenReady = subject.whenReady();
+          const whenReady = subject.whenReady();
           whenReady.then(doneSpy, failSpy);
           compiler.emit('invalid');
           await whenReady;

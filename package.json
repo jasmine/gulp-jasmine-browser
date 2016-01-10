@@ -19,16 +19,21 @@
     "url": "https://github.com/jasmine/gulp-jasmine-browser"
   },
   "devDependencies": {
-    "babel": "^5.5.4",
-    "babel-eslint": "^3.1.13",
+    "babel": "^6.3.26",
+    "babel-core": "^6.4.0",
+    "babel-eslint": "^4.1.6",
+    "babel-plugin-transform-object-assign": "^6.3.13",
+    "babel-plugin-transform-runtime": "^6.4.0",
+    "babel-preset-es2015-loose": "^6.1.4",
+    "babel-preset-stage-0": "^6.3.13",
     "cheerio": "^0.18.0",
     "debug": "^2.2.0",
     "del": "^1.1.1",
-    "eslint": "^0.20.0",
     "gulp": "^3.8.11",
-    "gulp-babel": "^5.1.0",
-    "gulp-eslint": "^0.11.1",
+    "gulp-babel": "^6.1.1",
+    "gulp-eslint": "^1.1.1",
     "gulp-header": "^1.2.2",
+    "gulp-if": "^2.0.0",
     "gulp-jasmine": "^2.0.1",
     "gulp-load-plugins": "^0.10.0",
     "gulp-plumber": "^1.0.0",
@@ -46,7 +51,8 @@
     "webpack-stream": "^2.0.0"
   },
   "dependencies": {
-    "babel-runtime": "^5.5.4",
+    "babel-polyfill": "^6.3.14",
+    "babel-runtime": "^6.3.19",
     "es6-promisify": "^1.1.1",
     "event-stream": "^3.3.1",
     "express": "^4.12.2",
@@ -61,10 +67,10 @@
     "vinyl": "^0.4.6"
   },
   "peerDependencies": {
-    "gulp": "^3.8.11",
-    "gulp-util": "^3.0.4"
+    "gulp": "^3.9.0",
+    "gulp-util": "^3.0.7"
   },
   "scripts": {
-    "test": "gulp"
+    "test": "./node_modules/.bin/gulp"
   }
 }

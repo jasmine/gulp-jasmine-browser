@@ -1,15 +1,15 @@
-var es = require('event-stream');
-var {spawn} = require('child_process');
-var lazypipe = require('lazypipe');
-var {listen} = require('./server');
-var path = require('path');
-var portfinder = require('portfinder');
-var promisify = require('es6-promisify');
-var reduce = require('stream-reduce');
-var once = require('lodash.once');
+const es = require('event-stream');
+const {spawn} = require('child_process');
+const lazypipe = require('lazypipe');
+const {listen} = require('./server');
+const path = require('path');
+const portfinder = require('portfinder');
+const promisify = require('es6-promisify');
+const reduce = require('stream-reduce');
+const once = require('lodash.once');
 
-var getPort = promisify(portfinder.getPort);
-var noop = () => {};
+const getPort = promisify(portfinder.getPort);
+const noop = () => {};
 
 /* eslint-disable no-unused-vars */
 const DEFAULT_JASMINE_PORT = 8888;
@@ -22,28 +22,28 @@ const drivers = {
 };
 
 function getServer(files, options = {}) {
-  var {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
+  const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
   if (findOpenPort) return getPort().then(port => listen(port, files, options));
   return listen(port, files, options);
 }
 
 function createServer(options) {
-  var {driver = 'phantomjs'} = options;
-  var {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
-  var stream = lazypipe().pipe(() => {
+  let {driver = 'phantomjs'} = options;
+  const {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
+  const stream = lazypipe().pipe(() => {
     return reduce(function(memo, file) {
       memo[file.relative] = file.contents;
       return memo;
     }, {});
   }).pipe(() => {
     return es.map(async function(files, callback) {
-      var {server, port} = await getServer(files, options);
+      const {server, port} = await getServer(files, options);
       callback(null, {server, port});
     });
   }).pipe(() => {
     return es.through(async function({server, port}) {
       this.pause();
-      var phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
+      const phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       try {
         await run(phantomProcess);
@@ -60,8 +60,8 @@ function createServer(options) {
 }
 
 function createServerWatch(options) {
-  var files = {};
-  var createServerOnce = once(() => getServer(files, options));
+  const files = {};
+  const createServerOnce = once(() => getServer(files, options));
   return lazypipe().pipe(() => {
     return es.map(function(file, callback) {
       files[file.relative] = file.contents;

@@ -1,29 +1,28 @@
 require('../spec_helper');
 
-describe('SpecRunner', function() {
-  var fs = require('fs');
-  var path = require('path');
-  var cheerio = require('cheerio');
-  var jasmineCore = require('jasmine-core');
-  var SpecRunner = require('../../dist/lib/spec_runner');
+describe('SpecRunner', () => {
+  let cheerio, consoleJs, consoleBootJs, jasmineCssFiles, jasmineJsFiles, subject;
 
-  var jasmineJsFiles = jasmineCore.files.jsFiles.map(fileName =>
-    fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8')
-  );
-  var jasmineCssFiles = jasmineCore.files.cssFiles.map(fileName =>
-    fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8')
-  );
-  var consoleJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console.js'), 'utf8');
-  var consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console_boot.js'), 'utf8');
-
-  var specRunnerFile;
-  beforeEach(function() {
-    specRunnerFile = new SpecRunner({console: true});
+  beforeEach(() => {
+    const fs = require('fs');
+    const path = require('path');
+    const jasmineCore = require('jasmine-core');
+    cheerio = require('cheerio');
+    consoleJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console.js'), 'utf8');
+    consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console_boot.js'), 'utf8');
+    jasmineCssFiles = jasmineCore.files.cssFiles.map(fileName =>
+      fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8')
+    );
+    jasmineJsFiles = jasmineCore.files.jsFiles.map(fileName =>
+      fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8')
+    );
+    const SpecRunner = require('../../dist/lib/spec_runner');
+    subject = new SpecRunner({console: true});
   });
 
-  it('includes all of the Jasmine library files', function() {
-    var html = specRunnerFile.contents.toString();
-    var tags = cheerio.load(html)('script,style,link');
+  it('includes all of the Jasmine library files', () => {
+    const html = subject.contents.toString();
+    const tags = cheerio.load(html)('script,style,link');
 
     expect(tags.length).toBe(6);
 
@@ -47,15 +46,15 @@ describe('SpecRunner', function() {
 
   });
 
-  it('allows adding additional css and js files', function() {
-    specRunnerFile.addFile('foo.js');
-    specRunnerFile.addFile('bar.css');
-    specRunnerFile.addFile('foo.js');
-    specRunnerFile.addFile('bar.css');
-    specRunnerFile.addFile('bar.css');
+  it('allows adding additional css and js files', () => {
+    subject.addFile('foo.js');
+    subject.addFile('bar.css');
+    subject.addFile('foo.js');
+    subject.addFile('bar.css');
+    subject.addFile('bar.css');
 
-    var html = specRunnerFile.contents;
-    var tags = cheerio.load(html)('script,style,link');
+    const html = subject.contents;
+    const tags = cheerio.load(html)('script,style,link');
 
     expect(tags.length).toBe(8);
 
