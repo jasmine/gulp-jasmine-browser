@@ -10,6 +10,9 @@ Run jasmine tests in a browser or headless browser using gulp.
 
 ## Usage
 
+Gulp Jasmine Browser currently works with any synchronous method of loading files. The beginning examples all assume basic script loading. 
+If you are using CommonJS to load files, you may want to skip to [Usage with Webpack](#usage-with-webpack)
+
 ### Create a Jasmine server to run specs in a browser
 
 In `gulpfile.js`
@@ -103,7 +106,7 @@ var jasmineBrowser = require('gulp-jasmine-browser');
 var webpack = require('webpack-stream');
 
 gulp.task('jasmine', function() {
-  return gulp.src('spec/**/*_spec.js'])
+  return gulp.src(['spec/**/*_spec.js'])
     .pipe(webpack({watch: true, output: {filename: 'spec.js'}}))
     .pipe(jasmineBrowser.specRunner())
     .pipe(jasmineBrowser.server());
