@@ -3,15 +3,13 @@ require('./spec_helper');
 describe('gulp-jasmine-browser', function() {
   const timeout = 5000;
 
-  let fs, path, childProcess, selenium, webdriverio, processes;
+  let fs, path, childProcess, processes;
 
   beforeEach(function() {
     processes = [];
     fs = require('fs');
     path = require('path');
     childProcess = require('child_process');
-    selenium = require('selenium-standalone');
-    webdriverio = require('webdriverio');
   });
 
   function gulp(task) {
@@ -33,23 +31,8 @@ describe('gulp-jasmine-browser', function() {
     };
   }
 
-  function getWebdriver() {
-    return new Promise(function(resolve, reject) {
-      selenium.install(function() {
-        selenium.start(function(error, process) {
-          if (error) return reject(error);
-          processes.push({process, closed: new Promise(res => process.on('close', res))});
-          const webdriver = webdriverio.remote().init();
-          processes.push({webdriver});
-          resolve({webdriver});
-        });
-      });
-    });
-  }
-
   afterEach(async function(done) {
-    await Promise.all(processes.filter(p => p.webdriver).map(p => p.webdriver.end()));
-    await Promise.all(processes.filter(p => p.process).map(p => (p.process.kill(), p.closed)));
+    (await Promise.all(processes)).filter(p => p.process).map(p => (p.process.kill(), p.closed));
     done();
   });
 
@@ -70,49 +53,54 @@ describe('gulp-jasmine-browser', function() {
   });
 
   describeWithoutTravisCI('when running in a browser', function() {
-    it('allows running tests in a browser', async function(done) {
-      gulp('server');
-      const {webdriver} = await getWebdriver();
-      const text = await webdriver.url('http://localhost:8888').getText('.bar.failed');
-      expect(text).toBe('2 specs, 1 failure');
-      done();
-    });
-
-    it('allows re-running tests in a browser', async function(done) {
-      gulp('server');
-      const {webdriver} = await getWebdriver();
-      const text = await webdriver.url('http://localhost:8888').refresh().getText('.bar.failed');
-      expect(text).toBe('2 specs, 1 failure');
-      done();
-    });
-
-    describe('when the file is mutated', function() {
-      const oldSpec = `it('makes a basic failing assertion', function() { expect(true).toBe(false); });`;
-      const newSpec = `it('makes a basic passing assertion', function() { expect(true).toBe(true); });`;
-      let pathToMutableSpec;
-
-      beforeEach(function() {
-        pathToMutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
+    describeWithWebdriver('when running with webdriver', () => {
+      let page;
+      it('allows running tests in a browser', async function(done) {
+        gulp('server');
+        page = (await visit('http://localhost:8888')).page;
+        const text = await page.getText('.bar.failed');
+        expect(text).toBe('2 specs, 1 failure');
+        done();
       });
 
-      afterEach(function(done) {
-        fs.writeFile(pathToMutableSpec, oldSpec, done);
+      it('allows re-running tests in a browser', async function(done) {
+        gulp('server');
+        page = (await visit('http://localhost:8888')).page;
+        const text = await page.url('http://localhost:8888').refresh().getText('.bar.failed');
+        expect(text).toBe('2 specs, 1 failure');
+        done();
       });
 
-      it('supports webpack with watch: true', async function(done) {
-        const {process: gulpProcess} = gulp('webpack-server');
+      describe('when the file is mutated', function() {
+        const oldSpec = `it('makes a basic failing assertion', function() { expect(true).toBe(false); });`;
+        const newSpec = `it('makes a basic passing assertion', function() { expect(true).toBe(true); });`;
+        let pathToMutableSpec;
 
-        const {webdriver} = await getWebdriver();
-        webdriver.addCommand('waitForWebpack', function(cb) {
-          gulpProcess.stdout.on('data', chunk => chunk.match(/webpack is watching for changes/i) && cb());
+        beforeEach(function() {
+          pathToMutableSpec = path.resolve(__dirname, 'fixtures', 'mutable_spec.js');
         });
 
-        let text = await webdriver.url('http://localhost:8888').getText('.bar.failed');
-        expect(text).toBe('1 spec, 1 failure');
-        fs.writeFileSync(pathToMutableSpec, newSpec);
-        text = await webdriver.waitForWebpack().refresh().getText('.bar.passed');
-        expect(text).toBe('1 spec, 0 failures');
-        done();
+        afterEach(function(done) {
+          fs.writeFile(pathToMutableSpec, oldSpec, done);
+        });
+
+        it('supports webpack with watch: true', async function(done) {
+          const {process: gulpProcess} = gulp('webpack-server');
+          page = (await visit('http://localhost:8888')).page;
+          let text = await page.getText('.bar.failed');
+          expect(text).toBe('1 spec, 1 failure');
+
+          function waitForWebpack() {
+            return new Promise(resolve => {
+              gulpProcess.stdout.on('data', chunk => chunk.match(/webpack is watching for changes/i) && resolve());
+            });
+          }
+          fs.writeFileSync(pathToMutableSpec, newSpec);
+
+          await waitForWebpack();
+          text = await page.refresh().getText('.bar.passed');
+          done();
+        });
       });
     });
   });

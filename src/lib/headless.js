@@ -1,19 +1,18 @@
 const es = require('event-stream');
-const {spawn} = require('child_process');
 const lazypipe = require('lazypipe');
 const {listen} = require('./server');
+const once = require('lodash.once');
 const path = require('path');
 const portfinder = require('portfinder');
-const thenify = require('thenify');
+const qs = require('qs');
 const reduce = require('stream-reduce');
-const once = require('lodash.once');
+const {spawn} = require('child_process');
+const thenify = require('thenify');
 
 const getPort = thenify(portfinder.getPort);
 const noop = () => {};
 
-/* eslint-disable no-unused-vars */
 const DEFAULT_JASMINE_PORT = 8888;
-/* eslint-enable no-unused-vars */
 
 const drivers = {
   phantomjs: require('./drivers/phantomjs'),
@@ -28,7 +27,8 @@ function getServer(files, options = {}) {
 }
 
 function createServer(options) {
-  let {driver = 'phantomjs'} = options;
+  let {driver = 'phantomjs', ...opts} = options;
+  const query = qs.stringify({catch: opts.catch, random: opts.random, throwFailures: opts.throwFailures});
   const {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe().pipe(() => {
     return reduce(function(memo, file) {
@@ -43,7 +43,7 @@ function createServer(options) {
   }).pipe(() => {
     return es.through(async function({server, port}) {
       this.pause();
-      const phantomProcess = spawn(command, [runner, port], {cwd: path.resolve(__dirname), stdio: 'pipe'});
+      const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio: 'pipe'});
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       try {
         await run(phantomProcess);

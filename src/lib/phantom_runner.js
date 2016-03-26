@@ -3,6 +3,7 @@ var webPage = require('webpage');
 var args = system.args;
 
 var port = args[1] || 8888;
+var query = args[2];
 
 var page = webPage.create();
 page.onConsoleMessage = function(message) {
@@ -13,4 +14,6 @@ page.onCallback = function(json) {
   phantom.exit(result.success ? 0 : 1);
 };
 
-page.open('http://localhost:' + port);
+var url = 'http://localhost:' + port;
+if (query) url += '/?' + query;
+page.open(url);
