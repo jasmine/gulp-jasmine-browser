@@ -131,6 +131,27 @@ gulp.task('jasmine', function() {
     .pipe(jasmineBrowser.server({whenReady: plugin.whenReady}));
 });
 ```
+### Options
+#### console
+Generates a console reporter for the spec runner that should be used with a headless browser.
+
+#### port
+Sets the port for the server.
+
+#### driver
+Sets the driver used by the headless server
+
+#### findOpenPort
+To force the headless port to use a specific port you can pass an option to the headless configuration so it does not search for an open port.
+```js
+gulp.task('jasmine', function() {
+  var port = 8080;
+  return gulp.src(['spec/**/*_spec.js'])
+    .pipe(jasmineBrowser.specRunner())
+    .pipe(jasmineBrowser.headless({port: 8080, findOpenPort: false}));
+});
+```
+
 
 ## Development
 ### Getting Started
@@ -149,4 +170,4 @@ Run tests with:
 npm test
 ```
 
-(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.
+(c) Copyright 2016 Pivotal Software, Inc. All Rights Reserved.
