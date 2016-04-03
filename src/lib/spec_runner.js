@@ -11,26 +11,33 @@ function resolveJasmineFiles(directoryProp, fileNamesProp) {
 
 const inlineTagExtensions = {'.css': 'style', '.js': 'script'};
 
+const htmlForExtension = {
+  '.js': filePath => `<script src="${filePath}"></script>`,
+  '.css': filePath => `<link href="${filePath}" rel="stylesheet" type="text/css"></link>`,
+  '_default': () => ''
+};
+
 const privates = new WeakMap();
+
 class SpecRunner extends File {
   constructor(options = {}) {
     super({path: '/specRunner.html', base: '/'});
 
     this.contents = new Buffer('<!DOCTYPE html>');
+    const useSourcemappedStacktrace = !options.console && options.sourcemappedStacktrace;
     privates.set(this, {files: new Set()});
-
-    const files = [].concat(
-      resolveJasmineFiles('path', 'cssFiles'),
-      resolveJasmineFiles('path', 'jsFiles'),
-      options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles')
-    );
-    files.forEach(fileName => this.inlineFile(fileName));
+    [
+      ...resolveJasmineFiles('path', 'cssFiles'),
+      ...resolveJasmineFiles('path', 'jsFiles'),
+      ...options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles'),
+      useSourcemappedStacktrace && require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'),
+      useSourcemappedStacktrace && 'sourcemapped_stacktrace_reporter.js'
+    ].filter(Boolean).forEach(fileName => this.inlineFile(fileName));
   }
 
   inlineFile(filePath) {
     const fileContents = fs.readFileSync(path.resolve(__dirname, filePath), {encoding: 'utf8'});
     const fileExtension = inlineTagExtensions[path.extname(filePath)];
-
     this.contents = Buffer.concat([
       this.contents,
       new Buffer(`<${fileExtension}>${fileContents}</${fileExtension}>`)
@@ -42,21 +49,11 @@ class SpecRunner extends File {
     const {files} = privates.get(this);
     if (files.has(filePath)) return this;
     files.add(filePath);
-
     const fileExtension = path.extname(filePath);
-
-    let html = '';
-    if (fileExtension === '.js') {
-      html = `<script src="${filePath}"></script>`;
-    } else if (fileExtension === '.css') {
-      html = `<link href="${filePath}" rel="stylesheet" type="text/css"></link>`;
-    }
-
     this.contents = Buffer.concat([
       this.contents,
-      new Buffer(html)
+      new Buffer(htmlForExtension[fileExtension in htmlForExtension ? fileExtension : '_default'](filePath))
     ]);
-
     return this;
   }
 }

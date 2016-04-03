@@ -132,16 +132,21 @@ gulp.task('jasmine', function() {
 });
 ```
 ### Options
-#### console
+#### for specRunner
+##### console
 Generates a console reporter for the spec runner that should be used with a headless browser.
 
-#### port
+##### sourcemappedStacktrace
+**EXPERIMENTAL** asynchronously loads the sourcemapped stacktraces for better stacktraces in chrome and firefox.
+
+#### for server and headless server
+##### port
 Sets the port for the server.
 
-#### driver
+##### driver
 Sets the driver used by the headless server
 
-#### findOpenPort
+##### findOpenPort
 To force the headless port to use a specific port you can pass an option to the headless configuration so it does not search for an open port.
 ```js
 gulp.task('jasmine', function() {
