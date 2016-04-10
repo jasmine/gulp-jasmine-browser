@@ -28,6 +28,7 @@ class SpecRunner extends File {
     privates.set(this, {files: new Set()});
     [
       ...resolveJasmineFiles('path', 'cssFiles'),
+      useSourcemappedStacktrace && 'sourcemapped_stacktrace_reporter.css',
       ...resolveJasmineFiles('path', 'jsFiles'),
       ...options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles'),
       useSourcemappedStacktrace && require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'),

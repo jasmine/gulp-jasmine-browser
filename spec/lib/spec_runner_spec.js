@@ -1,6 +1,6 @@
 require('../spec_helper');
 
-describe('SpecRunner', () => {
+fdescribe('SpecRunner', () => {
   let $, fs, path, cssFiles, jsFiles, subject, SpecRunner;
 
   function loadJasmineFiles(...types) {
@@ -111,10 +111,11 @@ describe('SpecRunner', () => {
       });
 
       describe('when the sourcemapped stacktrace is true', () => {
-        let sourcemappedStacktraceJs, sourceMappedStacktraceReporterJs;
+        let sourcemappedStacktraceJs, sourceMappedStacktraceReporterCss, sourceMappedStacktraceReporterJs;
 
         beforeEach(() => {
           sourcemappedStacktraceJs = fs.readFileSync(require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'), 'utf8');
+          sourceMappedStacktraceReporterCss = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'sourcemapped_stacktrace_reporter.css'), 'utf8');
           sourceMappedStacktraceReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'sourcemapped_stacktrace_reporter.js'), 'utf8');
           subject = new SpecRunner({sourcemappedStacktrace: true});
         });
@@ -123,28 +124,31 @@ describe('SpecRunner', () => {
           const html = subject.contents.toString();
           const $tags = $.load(html)('script,style,link');
 
-          expect($tags.length).toBe(7);
+          expect($tags.length).toBe(8);
 
           expect($tags.eq(0).is('style')).toBe(true);
           expect($tags.eq(0).html()).toBe(cssFiles[0]);
 
-          expect($tags.eq(1).is('script')).toBe(true);
-          expect($tags.eq(1).html()).toBe(jsFiles[0]);
+          expect($tags.eq(1).is('style')).toBe(true);
+          expect($tags.eq(1).html()).toBe(sourceMappedStacktraceReporterCss);
 
           expect($tags.eq(2).is('script')).toBe(true);
-          expect($tags.eq(2).html()).toBe(jsFiles[1]);
+          expect($tags.eq(2).html()).toBe(jsFiles[0]);
 
           expect($tags.eq(3).is('script')).toBe(true);
-          expect($tags.eq(3).html()).toBe(jsFiles[2]);
+          expect($tags.eq(3).html()).toBe(jsFiles[1]);
 
           expect($tags.eq(4).is('script')).toBe(true);
-          expect($tags.eq(4).html()).toBe(bootFiles[0]);
+          expect($tags.eq(4).html()).toBe(jsFiles[2]);
 
           expect($tags.eq(5).is('script')).toBe(true);
-          expect($tags.eq(5).html()).toBe(sourcemappedStacktraceJs);
+          expect($tags.eq(5).html()).toBe(bootFiles[0]);
 
           expect($tags.eq(6).is('script')).toBe(true);
-          expect($tags.eq(6).html()).toBe(sourceMappedStacktraceReporterJs);
+          expect($tags.eq(6).html()).toBe(sourcemappedStacktraceJs);
+
+          expect($tags.eq(7).is('script')).toBe(true);
+          expect($tags.eq(7).html()).toBe(sourceMappedStacktraceReporterJs);
         });
       });
     });
