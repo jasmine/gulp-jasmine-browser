@@ -157,6 +157,16 @@ gulp.task('jasmine', function() {
 });
 ```
 
+##### catch
+If true, the headless server catches exceptions raised while running tests
+
+##### random
+If true, the headless server runs the tests in random order
+
+##### throwFailures
+If true, the headless server fails tests on the first failed expectation
+
+
 
 ## Development
 ### Getting Started
