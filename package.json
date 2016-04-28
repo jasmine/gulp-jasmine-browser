@@ -49,7 +49,6 @@
     "slimerjs": "^0.9.6",
     "strong-wait-till-listening": "^1.0.2",
     "supertest": "^1.0.1",
-    "thenify": "^3.2.0",
     "webdriverio": "^4.0.5",
     "webpack-stream": "^2.0.0"
   },
