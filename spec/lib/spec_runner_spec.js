@@ -1,6 +1,6 @@
 require('../spec_helper');
 
-fdescribe('SpecRunner', () => {
+describe('SpecRunner', () => {
   let $, fs, path, cssFiles, jsFiles, subject, SpecRunner;
 
   function loadJasmineFiles(...types) {
