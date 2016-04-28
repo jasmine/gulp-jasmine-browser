@@ -58,7 +58,7 @@ describe('gulp-jasmine-browser', function() {
       it('allows running tests in a browser', async function(done) {
         gulp('server');
         page = (await visit('http://localhost:8888')).page;
-        const text = await page.getText('.bar.failed');
+        const text = await page.getText('.jasmine-bar.jasmine-failed');
         expect(text).toBe('2 specs, 1 failure');
         done();
       });
@@ -66,7 +66,7 @@ describe('gulp-jasmine-browser', function() {
       it('allows re-running tests in a browser', async function(done) {
         gulp('server');
         page = (await visit('http://localhost:8888')).page;
-        const text = await page.url('http://localhost:8888').refresh().getText('.bar.failed');
+        const text = await page.url('http://localhost:8888').refresh().getText('.jasmine-bar.jasmine-failed');
         expect(text).toBe('2 specs, 1 failure');
         done();
       });
@@ -87,7 +87,7 @@ describe('gulp-jasmine-browser', function() {
         it('supports webpack with watch: true', async function(done) {
           const {process: gulpProcess} = gulp('webpack-server');
           page = (await visit('http://localhost:8888')).page;
-          let text = await page.getText('.bar.failed');
+          let text = await page.getText('.jasmine-bar.jasmine-failed');
           expect(text).toBe('1 spec, 1 failure');
 
           function waitForWebpack() {
@@ -98,7 +98,7 @@ describe('gulp-jasmine-browser', function() {
           fs.writeFileSync(pathToMutableSpec, newSpec);
 
           await waitForWebpack();
-          text = await page.refresh().getText('.bar.passed');
+          text = await page.refresh().getText('.jasmine-bar.jasmine-passed');
           done();
         });
       });
