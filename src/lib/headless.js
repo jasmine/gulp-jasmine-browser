@@ -16,6 +16,7 @@ const DEFAULT_JASMINE_PORT = 8888;
 
 const drivers = {
   phantomjs: require('./drivers/phantomjs'),
+  phantomjs1: require('./drivers/phantomjs1'),
   slimerjs: require('./drivers/slimerjs'),
   _default: require('./drivers/phantomjs')
 };
