@@ -28,8 +28,8 @@ function getServer(files, options = {}) {
 }
 
 function createServer(options) {
-  let {driver = 'phantomjs', ...opts} = options;
-  const query = qs.stringify({catch: opts.catch, random: opts.random, throwFailures: opts.throwFailures});
+  let {driver = 'phantomjs', random, throwFailures, spec, seed} = options;
+  const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe().pipe(() => {
     return reduce(function(memo, file) {
