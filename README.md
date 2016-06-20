@@ -141,7 +141,7 @@ Generates a console reporter for the spec runner that should be used with a head
 
 #### for server and headless server
 ##### port
-Sets the port for the server.
+Sets the port for the server
 
 ##### driver
 Sets the driver used by the headless server
@@ -162,6 +162,12 @@ If true, the headless server catches exceptions raised while running tests
 
 ##### random
 If true, the headless server runs the tests in random order
+
+##### seed
+Sets the randomization seed if randomization is turned on
+
+##### spec
+Only runs specs that match the given string
 
 ##### throwFailures
 If true, the headless server fails tests on the first failed expectation
