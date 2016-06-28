@@ -136,6 +136,10 @@ gulp.task('jasmine', function() {
 ##### console
 Generates a console reporter for the spec runner that should be used with a headless browser.
 
+##### profile
+Prints out timing information for your slowest specs after Jasmine is done.
+If used in the browser, this will print into the developer console. In headless mode, this will print to the terminal.
+
 ##### sourcemappedStacktrace
 **EXPERIMENTAL** asynchronously loads the sourcemapped stacktraces for better stacktraces in chrome and firefox.
 
