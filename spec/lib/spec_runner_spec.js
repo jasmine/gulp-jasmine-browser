@@ -24,7 +24,7 @@ describe('SpecRunner', () => {
     let consoleJs, consoleBootJs;
 
     beforeEach(() => {
-      consoleJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console.js'), 'utf8');
+      consoleJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'console_reporter.js'), 'utf8');
       consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console_boot.js'), 'utf8');
       subject = new SpecRunner({console: true});
     });
@@ -74,6 +74,25 @@ describe('SpecRunner', () => {
       expect($tags.eq(7).attr('rel')).toBe('stylesheet');
       expect($tags.eq(7).is('link')).toBe(true);
     });
+
+    describe('when profile is true', () => {
+      let specProfileReporterJs;
+
+      beforeEach(() => {
+        specProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'profile_reporter.js'), 'utf8');
+        subject = new SpecRunner({profile: true});
+      });
+
+      it('includes all of the Jasmine library files', () => {
+        const html = subject.contents.toString();
+        const $tags = $.load(html)('script,style,link');
+
+        expect($tags.length).toBe(7);
+
+        expect($tags.eq(4).is('script')).toBe(true);
+        expect($tags.eq(4).html()).toBe(specProfileReporterJs);
+      });
+    });
   });
 
   describe('when the console true option is not true', () => {
@@ -109,47 +128,85 @@ describe('SpecRunner', () => {
         expect($tags.eq(4).is('script')).toBe(true);
         expect($tags.eq(4).html()).toBe(bootFiles[0]);
       });
+    });
 
-      describe('when the sourcemapped stacktrace is true', () => {
-        let sourcemappedStacktraceJs, sourceMappedStacktraceReporterCss, sourceMappedStacktraceReporterJs;
+    describe('when the sourcemapped stacktrace is true', () => {
+      let sourcemappedStacktraceJs, sourceMappedStacktraceReporterCss, sourceMappedStacktraceReporterJs;
 
-        beforeEach(() => {
-          sourcemappedStacktraceJs = fs.readFileSync(require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'), 'utf8');
-          sourceMappedStacktraceReporterCss = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'sourcemapped_stacktrace_reporter.css'), 'utf8');
-          sourceMappedStacktraceReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'sourcemapped_stacktrace_reporter.js'), 'utf8');
-          subject = new SpecRunner({sourcemappedStacktrace: true});
-        });
+      beforeEach(() => {
+        sourcemappedStacktraceJs = fs.readFileSync(require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'), 'utf8');
+        sourceMappedStacktraceReporterCss = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'stylesheets', 'sourcemapped_stacktrace_reporter.css'), 'utf8');
+        sourceMappedStacktraceReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'add_sourcemapped_stacktrace_reporter.js'), 'utf8');
+        subject = new SpecRunner({sourcemappedStacktrace: true});
+      });
 
-        it('includes all of the Jasmine library files', () => {
-          const html = subject.contents.toString();
-          const $tags = $.load(html)('script,style,link');
+      it('includes all of the Jasmine library files', () => {
+        const html = subject.contents.toString();
+        const $tags = $.load(html)('script,style,link');
 
-          expect($tags.length).toBe(8);
+        expect($tags.length).toBe(8);
 
-          expect($tags.eq(0).is('style')).toBe(true);
-          expect($tags.eq(0).html()).toBe(cssFiles[0]);
+        expect($tags.eq(0).is('style')).toBe(true);
+        expect($tags.eq(0).html()).toBe(cssFiles[0]);
 
-          expect($tags.eq(1).is('style')).toBe(true);
-          expect($tags.eq(1).html()).toBe(sourceMappedStacktraceReporterCss);
+        expect($tags.eq(1).is('style')).toBe(true);
+        expect($tags.eq(1).html()).toBe(sourceMappedStacktraceReporterCss);
 
-          expect($tags.eq(2).is('script')).toBe(true);
-          expect($tags.eq(2).html()).toBe(jsFiles[0]);
+        expect($tags.eq(2).is('script')).toBe(true);
+        expect($tags.eq(2).html()).toBe(jsFiles[0]);
 
-          expect($tags.eq(3).is('script')).toBe(true);
-          expect($tags.eq(3).html()).toBe(jsFiles[1]);
+        expect($tags.eq(3).is('script')).toBe(true);
+        expect($tags.eq(3).html()).toBe(jsFiles[1]);
 
-          expect($tags.eq(4).is('script')).toBe(true);
-          expect($tags.eq(4).html()).toBe(jsFiles[2]);
+        expect($tags.eq(4).is('script')).toBe(true);
+        expect($tags.eq(4).html()).toBe(jsFiles[2]);
 
-          expect($tags.eq(5).is('script')).toBe(true);
-          expect($tags.eq(5).html()).toBe(bootFiles[0]);
+        expect($tags.eq(5).is('script')).toBe(true);
+        expect($tags.eq(5).html()).toBe(bootFiles[0]);
 
-          expect($tags.eq(6).is('script')).toBe(true);
-          expect($tags.eq(6).html()).toBe(sourcemappedStacktraceJs);
+        expect($tags.eq(6).is('script')).toBe(true);
+        expect($tags.eq(6).html()).toBe(sourcemappedStacktraceJs);
 
-          expect($tags.eq(7).is('script')).toBe(true);
-          expect($tags.eq(7).html()).toBe(sourceMappedStacktraceReporterJs);
-        });
+        expect($tags.eq(7).is('script')).toBe(true);
+        expect($tags.eq(7).html()).toBe(sourceMappedStacktraceReporterJs);
+      });
+    });
+
+    describe('when profile is true', () => {
+      let addProfileReporterJs, specProfileReporterJs;
+
+      beforeEach(() => {
+        addProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'add_profile_reporter.js'), 'utf8');
+        specProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'profile_reporter.js'), 'utf8');
+        subject = new SpecRunner({profile: true});
+      });
+
+      it('includes all of the Jasmine library files', () => {
+        const html = subject.contents.toString();
+        const $tags = $.load(html)('script,style,link');
+
+        expect($tags.length).toBe(7);
+
+        expect($tags.eq(0).is('style')).toBe(true);
+        expect($tags.eq(0).html()).toBe(cssFiles[0]);
+
+        expect($tags.eq(1).is('script')).toBe(true);
+        expect($tags.eq(1).html()).toBe(jsFiles[0]);
+
+        expect($tags.eq(2).is('script')).toBe(true);
+        expect($tags.eq(2).html()).toBe(jsFiles[1]);
+
+        expect($tags.eq(3).is('script')).toBe(true);
+        expect($tags.eq(3).html()).toBe(jsFiles[2]);
+
+        expect($tags.eq(4).is('script')).toBe(true);
+        expect($tags.eq(4).html()).toBe(specProfileReporterJs);
+
+        expect($tags.eq(5).is('script')).toBe(true);
+        expect($tags.eq(5).html()).toBe(bootFiles[0]);
+
+        expect($tags.eq(6).is('script')).toBe(true);
+        expect($tags.eq(6).html()).toBe(addProfileReporterJs);
       });
     });
   });

@@ -24,15 +24,18 @@ class SpecRunner extends File {
     super({path: '/specRunner.html', base: '/'});
 
     this.contents = new Buffer('<!DOCTYPE html>');
-    const useSourcemappedStacktrace = !options.console && options.sourcemappedStacktrace;
+    const {profile, console, sourcemappedStacktrace} = options;
+    const useSourcemappedStacktrace = !console && sourcemappedStacktrace;
     privates.set(this, {files: new Set()});
     [
       ...resolveJasmineFiles('path', 'cssFiles'),
-      useSourcemappedStacktrace && 'sourcemapped_stacktrace_reporter.css',
+      useSourcemappedStacktrace && 'stylesheets/sourcemapped_stacktrace_reporter.css',
       ...resolveJasmineFiles('path', 'jsFiles'),
-      ...options.console ? ['console.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles'),
+      profile && 'reporters/profile_reporter.js',
+      ...(console ? ['reporters/console_reporter.js', 'console_boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles')),
+      profile && !console && 'reporters/add_profile_reporter.js',
       useSourcemappedStacktrace && require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'),
-      useSourcemappedStacktrace && 'sourcemapped_stacktrace_reporter.js'
+      useSourcemappedStacktrace && 'reporters/add_sourcemapped_stacktrace_reporter.js'
     ].filter(Boolean).forEach(fileName => this.inlineFile(fileName));
   }
 

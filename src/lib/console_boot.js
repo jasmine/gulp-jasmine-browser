@@ -34,8 +34,7 @@
     return destination;
   }
 
-  window.jasmine = jasmineRequire.core(jasmineRequire);
-  jasmineRequire.console(jasmineRequire, jasmine);
+  window.jasmine = window.jasmine || jasmineRequire.core(jasmineRequire);
 
   var env = jasmine.getEnv();
   injectQueryParams(env, jasmineRequire.QueryString(), jasmineRequire.HtmlSpecFilter());
@@ -45,17 +44,37 @@
   extend(window, jasmineInterface);
 
   var buffer = '';
-  var consoleReporter = new jasmine.ConsoleReporter({
-    showColors: true,
-    timer: new jasmine.Timer(),
-    print: function(message) { buffer += message; console.log(message); },
-    onComplete: function(success) {
-      callPhantom(JSON.stringify({success: success, buffer: buffer}));
-      buffer = '';
-    }
-  });
+  var success;
+  var done = 0;
+  var activeReporters = 0;
 
-  env.addReporter(consoleReporter);
+  if (jasmineRequire.console) {
+    jasmineRequire.console(jasmineRequire, jasmine);
+    var consoleReporter = new jasmine.ConsoleReporter({
+      showColors: true,
+      timer: new jasmine.Timer(),
+      print: function(message) { buffer += message; console.log(message); },
+      onComplete: function(s) {
+        success = s;
+        done++;
+      }
+    });
+
+    env.addReporter(consoleReporter);
+    activeReporters++;
+  }
+
+  if (jasmineRequire.profile) {
+    jasmineRequire.profile(jasmineRequire, jasmine);
+    var profileReporter = new jasmine.ProfileReporter({
+      print: function(message) { buffer += message; console.log(message); },
+      onComplete: function() {
+        done++;
+      }
+    });
+    env.addReporter(profileReporter);
+    activeReporters++;
+  }
 
   var currentWindowOnload = window.onload;
   window.onload = function() {
@@ -64,4 +83,13 @@
     }
     env.execute();
   };
+
+  function spinLock() {
+    setTimeout(function() {
+      if (done !== activeReporters) return spinLock();
+      callPhantom(JSON.stringify({success: success, buffer: buffer}));
+      buffer = '';
+    }, 0);
+  }
+  spinLock();
 })();
