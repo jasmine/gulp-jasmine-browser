@@ -47,11 +47,11 @@
     "phantomjs-prebuilt": "^2.1.7",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.0",
-    "selenium-standalone": "^5.1.0",
+    "selenium-standalone": "^5.5.0",
     "slimerjs": "^0.906.1",
     "strong-wait-till-listening": "^1.0.2",
     "supertest": "^1.0.1",
-    "webdriverio": "^4.0.5",
+    "webdriverio": "^4.2.5",
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
@@ -77,6 +77,6 @@
     "gulp-util": "^3.0.7"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp"
+    "test": "gulp"
   }
 }
