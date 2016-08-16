@@ -14,9 +14,8 @@ function describeWithWebdriver(name, callback, options = {}) {
       webdriver = webdriver || new JasmineWebdriver({timeout: 5000, ...options});
     });
 
-    afterEach(async function(done) {
+    afterEach.async(async function() {
       await webdriver.end();
-      done();
     });
 
     callback();

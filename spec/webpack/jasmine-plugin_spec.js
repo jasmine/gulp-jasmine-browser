@@ -30,10 +30,9 @@ describe('JasminePlugin', function() {
         compiler.emit('done');
       });
 
-      it('resolves the promise', async function(done) {
+      it.async('resolves the promise', async function() {
         await subject.whenReady().then(doneSpy, failSpy);
         expect(doneSpy).toHaveBeenCalled();
-        done();
       });
 
       describe('and then the invalid event is emitted', function() {

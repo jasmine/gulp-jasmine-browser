@@ -16,10 +16,9 @@ describe('Server', function() {
     });
 
     describe('GET /', function() {
-      it('renders the spec runner', async function(done) {
+      it.async('renders the spec runner', async function() {
         const res = await request(app).get('/').expect(200);
         expect(res.text).toContain('The Spec Runner');
-        done();
       });
     });
 
@@ -29,18 +28,16 @@ describe('Server', function() {
           files['foo.js'] = 'Foo Content';
         });
 
-        it('renders the file', async function(done) {
+        it.async('renders the file', async function() {
           const res = await request(app).get('/foo.js').expect(200);
           expect(res.text).toContain('Foo Content');
-          done();
         });
       });
 
       describe('with a file that does not exist', function() {
-        it('returns 404', async function(done) {
+        it.async('returns 404', async function() {
           const res = await request(app).get('/bar.js');
           expect(res.statusCode).toBe(404);
-          done();
         });
       });
     });
@@ -55,7 +52,7 @@ describe('Server', function() {
 
     describe('GET /', function() {
       describe('whenReady is resolved', function() {
-        it('renders the valid version of spec runner', async function(done) {
+        it.async('renders the valid version of spec runner', async function() {
           setTimeout(function() {
             files['specRunner.html'] = 'The New Version';
             whenReady.resolve();
@@ -63,10 +60,9 @@ describe('Server', function() {
 
           const res = await request(app).get('/').expect(200);
           expect(res.text).toContain('The New Version');
-          done();
         });
 
-        it('does not render intermediate invalid states', async function(done) {
+        it.async('does not render intermediate invalid states', async function() {
           setTimeout(function() {
             files['specRunner.html'] = 'The Bad Version';
             whenReady.reject();
@@ -80,7 +76,6 @@ describe('Server', function() {
 
           const res = await request(app).get('/').expect(200);
           expect(res.text).toContain('The Good Version');
-          done();
         });
       });
     });
