@@ -1,4 +1,3 @@
-const es = require('event-stream');
 const lazypipe = require('lazypipe');
 const {listen} = require('./server');
 const once = require('lodash.once');
@@ -8,9 +7,9 @@ const qs = require('qs');
 const reduce = require('stream-reduce');
 const {spawn} = require('child_process');
 const thenify = require('thenify');
+const {obj: through} = require('through2');
 
 const getPort = thenify(portfinder.getPort);
-const noop = () => {};
 
 const DEFAULT_JASMINE_PORT = 8888;
 
@@ -37,12 +36,12 @@ function createServer(options) {
       return memo;
     }, {});
   }).pipe(() => {
-    return es.map(async function(files, callback) {
+    return through(async function(files, enc, next) {
       const {server, port} = await getServer(files, options);
-      callback(null, {server, port});
+      next(null, {server, port});
     });
   }).pipe(() => {
-    return es.through(async function({server, port}) {
+    return through(async function({server, port}, enc, next) {
       this.pause();
       const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio: 'pipe'});
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
@@ -53,9 +52,10 @@ function createServer(options) {
       } finally{
         this.resume();
         server.close();
-        this.emit('end');
+        this.push(null);
+        next();
       }
-    }, noop);
+    }, () => {});
   });
   return stream();
 }
@@ -64,10 +64,10 @@ function createServerWatch(options) {
   const files = {};
   const createServerOnce = once(() => getServer(files, options));
   return lazypipe().pipe(() => {
-    return es.map(function(file, callback) {
+    return through((file, enc, next) => {
       files[file.relative] = file.contents;
       createServerOnce();
-      callback(null, files);
+      next(null, files);
     });
   })();
 }
