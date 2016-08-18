@@ -7,11 +7,11 @@ var query = args[2];
 
 var page = webPage.create();
 page.onConsoleMessage = function(message) {
-  system.stdout.write(message);
+  system.stdout.writeLine(message);
 };
-page.onCallback = function(json) {
-  var result = JSON.parse(json);
-  phantom.exit(result.success ? 0 : 1);
+page.onCallback = function(result) {
+  if (result.message) system.stderr.writeLine(result.message);
+  if (result.exit) phantom.exit();
 };
 
 var url = 'http://localhost:' + port;

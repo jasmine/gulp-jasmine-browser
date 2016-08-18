@@ -8,6 +8,11 @@ const reduce = require('stream-reduce');
 const {spawn} = require('child_process');
 const thenify = require('thenify');
 const {obj: through} = require('through2');
+const ConsoleReporter = require('jasmine/lib/reporters/console_reporter');
+const pipe = require('multipipe');
+const toReporter = require('jasmine-json-stream-reporter/to-reporter');
+const split = require('split2');
+const flatMap = require('flat-map');
 
 const getPort = thenify(portfinder.getPort);
 
@@ -20,6 +25,22 @@ const drivers = {
   _default: require('./drivers/phantomjs')
 };
 
+function onError(message) {
+  try {
+    const {PluginError} = require('gulp-util');
+    return new PluginError('gulp-jasmine-browser', {message, showProperties: false});
+  } catch(e) {
+    return new Error(message);
+  }
+}
+
+function Timer(options = {}) {
+  const now = options.now || Date.now;
+  let startTime;
+  this.start = () => startTime = now();
+  this.elapsed = () => now() - startTime;
+}
+
 function getServer(files, options = {}) {
   const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
   if (findOpenPort) return getPort().then(port => listen(port, files, options));
@@ -27,36 +48,24 @@ function getServer(files, options = {}) {
 }
 
 function createServer(options) {
-  let {driver = 'phantomjs', random, throwFailures, spec, seed} = options;
+  let {driver = 'phantomjs', random, throwFailures, spec, seed, showColors = true} = options;
   const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
-  const {command, runner, run} = drivers[driver in drivers ? driver : '_default']();
-  const stream = lazypipe().pipe(() => {
-    return reduce(function(memo, file) {
-      memo[file.relative] = file.contents;
-      return memo;
-    }, {});
-  }).pipe(() => {
-    return through(async function(files, enc, next) {
-      const {server, port} = await getServer(files, options);
-      next(null, {server, port});
-    });
-  }).pipe(() => {
-    return through(async function({server, port}, enc, next) {
-      this.pause();
-      const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio: 'pipe'});
+  const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
+  const stream = lazypipe()
+    .pipe(() => reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}))
+    .pipe(() => through((files, enc, next) => getServer(files, options).then(i => next(null, i))))
+    .pipe(() => flatMap(({server, port}, next) => {
+      const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
+      const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio});
+      phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
-      try {
-        await run(phantomProcess);
-      } catch(e) {
-        this.emit('error', 'Tests failed');
-      } finally{
-        this.resume();
-        server.close();
-        this.push(null);
-        next();
-      }
-    }, () => {});
-  });
+      next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
+    }))
+    .pipe(() => {
+      const print = (...args) => process.stdout.write(...args);
+      const timer = new Timer();
+      return toReporter(new ConsoleReporter({print, timer, showColors}), {onError});
+    });
   return stream();
 }
 
