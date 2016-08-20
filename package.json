@@ -59,7 +59,7 @@
     "express": "^4.13.3",
     "flat-map": "^0.1.0",
     "jasmine-core": "^2.4.1",
-    "jasmine-json-stream-reporter": "0.0.6",
+    "jasmine-json-stream-reporter": "^0.0.6",
     "jasmine-terminal-reporter": "^1.0.2",
     "lazypipe": "^1.0.1",
     "lodash.once": "^4.0.0",
