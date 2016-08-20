@@ -43,8 +43,18 @@
 
   extend(window, jasmineInterface);
 
+  var jsonStreamReporter;
+
+  if (jasmineRequire.profile) {
+    jasmineRequire.profile(jasmineRequire, jasmine);
+    var profileReporter = new jasmine.ProfileReporter({
+      print: function(message) { jsonStreamReporter && jsonStreamReporter.message(message) }
+    });
+    env.addReporter(profileReporter);
+  }
+
   if (window.JasmineJsonStreamReporter) {
-    var jsonStreamReporter = new JasmineJsonStreamReporter({
+    jsonStreamReporter = new JasmineJsonStreamReporter({
       print: function(message) {
         callPhantom({message: message});
       },
