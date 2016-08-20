@@ -8,8 +8,8 @@ const reduce = require('stream-reduce');
 const {spawn} = require('child_process');
 const thenify = require('thenify');
 const {obj: through} = require('through2');
-const ConsoleReporter = require('jasmine/lib/reporters/console_reporter');
 const pipe = require('multipipe');
+const TerminalReporter = require('jasmine-terminal-reporter');
 const toReporter = require('jasmine-json-stream-reporter/to-reporter');
 const split = require('split2');
 const flatMap = require('flat-map');
@@ -48,7 +48,7 @@ function getServer(files, options = {}) {
 }
 
 function createServer(options) {
-  let {driver = 'phantomjs', random, throwFailures, spec, seed, showColors = true} = options;
+  let {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, ...opts} = options;
   const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
@@ -61,11 +61,7 @@ function createServer(options) {
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
     }))
-    .pipe(() => {
-      const print = (...args) => process.stdout.write(...args);
-      const timer = new Timer();
-      return toReporter(new ConsoleReporter({print, timer, showColors}), {onError});
-    });
+    .pipe(() => toReporter(reporter || new TerminalReporter(opts), {onError}));
   return stream();
 }
 
