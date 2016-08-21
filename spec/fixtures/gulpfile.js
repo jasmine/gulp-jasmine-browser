@@ -5,13 +5,13 @@ const jasmineBrowser = require('../../dist/index');
 gulp.task('phantomjs', function() {
   return gulp.src('dummy_spec.js')
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.phantomjs());
+    .pipe(jasmineBrowser.headless({driver: 'phatomjs', showColors: false}));
 });
 
 gulp.task('slimerjs', function() {
   return gulp.src('dummy_spec.js')
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.slimerjs());
+    .pipe(jasmineBrowser.headless({driver: 'slimerjs', showColors: false}));
 });
 
 gulp.task('server', function() {

@@ -6,7 +6,7 @@ const runSequence = require('run-sequence');
 
 const COPYRIGHT = '//(c) Copyright 2015 Pivotal Software, Inc. All Rights Reserved.\n';
 const BABEL_SRC = ['src/lib/drivers/**/*.js', 'src/webpack/**/*.js', 'src/lib/headless.js', 'src/lib/server.js', 'src/lib/spec_runner.js', 'src/index.js'];
-const BROWSER_SRC = ['src/lib/console_boot.js', 'src/lib/phantom_runner.js', 'src/lib/slimer_runner.js', 'src/lib/reporters/**/*.js'];
+const BROWSER_SRC = ['src/lib/boot.js', 'src/lib/phantom_runner.js', 'src/lib/slimer_runner.js', 'src/lib/reporters/**/*.js'];
 const CSS_SRC = ['src/lib/stylesheets/**/*.css'];
 const NON_JS_SRC = ['LICENSE.md', 'README.md', 'package.json', 'public/jasmine_favicon.png'];
 

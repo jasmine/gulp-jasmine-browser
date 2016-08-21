@@ -176,7 +176,9 @@ Only runs specs that match the given string
 ##### throwFailures
 If true, the headless server fails tests on the first failed expectation
 
-
+##### reporter
+Provide a [custom reporter](http://jasmine.github.io/2.1/custom_reporter.html) for the output, defaults to the jasmine
+terminal reporter.
 
 ## Development
 ### Getting Started

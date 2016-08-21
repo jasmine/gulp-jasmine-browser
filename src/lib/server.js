@@ -30,7 +30,7 @@ const Server = {
   createServer(files, options = {}) {
     const app = express();
 
-    app.use(favicon(path.join(__dirname, '..', 'public', 'jasmine_favicon.png')));
+    app.use(favicon(path.resolve(__dirname, '..', 'public', 'jasmine_favicon.png')));
 
     app.get('/', function(req, res) {
       const {whenReady = () => Promise.resolve()} = options;

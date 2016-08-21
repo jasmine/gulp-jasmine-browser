@@ -6,9 +6,12 @@ var port = args[1] || 8888;
 var query = args[2];
 
 var page = webPage.create();
-page.onCallback = function(json) {
-  console.log(json);
-  slimer.exit();
+page.onCallback = function(result) {
+  if (result.message) system.stdout.writeLine(result.message);
+  if (result.exit) slimer.exit(0);
+};
+page.onConsoleMessage = function() {
+  page.onCallback({message: JSON.stringify({id: ':message', message: Array.prototype.slice.call(arguments, 0).join('') + '\n'})});
 };
 
 var url = 'http://localhost:' + port;

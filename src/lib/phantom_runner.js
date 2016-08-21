@@ -6,12 +6,12 @@ var port = args[1] || 8888;
 var query = args[2];
 
 var page = webPage.create();
-page.onConsoleMessage = function(message) {
-  system.stdout.write(message);
+page.onCallback = function(result) {
+  if (result.message) system.stderr.writeLine(result.message);
+  if (result.exit) phantom.exit();
 };
-page.onCallback = function(json) {
-  var result = JSON.parse(json);
-  phantom.exit(result.success ? 0 : 1);
+page.onConsoleMessage = function() {
+  page.onCallback({message: JSON.stringify({id: ':message', message: Array.prototype.slice.call(arguments, 0).join('') + '\n'})});
 };
 
 var url = 'http://localhost:' + port;

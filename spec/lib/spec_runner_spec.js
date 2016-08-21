@@ -21,11 +21,11 @@ describe('SpecRunner', () => {
   });
 
   describe('when the console true option is true', () => {
-    let consoleJs, consoleBootJs;
+    let jsonStreamReporter, bootJs;
 
     beforeEach(() => {
-      consoleJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'console_reporter.js'), 'utf8');
-      consoleBootJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'console_boot.js'), 'utf8');
+      jsonStreamReporter = fs.readFileSync(require.resolve('jasmine-json-stream-reporter/browser.js'), 'utf8');
+      bootJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'boot.js'), 'utf8');
       subject = new SpecRunner({console: true});
     });
 
@@ -48,10 +48,10 @@ describe('SpecRunner', () => {
       expect($tags.eq(3).html()).toBe(jsFiles[2]);
 
       expect($tags.eq(4).is('script')).toBe(true);
-      expect($tags.eq(4).html()).toBe(consoleJs);
+      expect($tags.eq(4).html()).toBe(jsonStreamReporter);
 
       expect($tags.eq(5).is('script')).toBe(true);
-      expect($tags.eq(5).html()).toBe(consoleBootJs);
+      expect($tags.eq(5).html()).toBe(bootJs);
     });
 
     it('allows adding additional css and js files', () => {
