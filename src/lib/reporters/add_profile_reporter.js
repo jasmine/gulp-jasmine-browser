@@ -1,8 +1,6 @@
 (function() {
-  if (jasmineRequire.profile) {
-    window.jasmine = window.jasmine || jasmineRequire.core(jasmineRequire);
-    jasmineRequire.profile(jasmineRequire, jasmine);
-    var profileReporter = new jasmine.ProfileReporter({
+  if (window.JasmineProfileReporter) {
+    var profileReporter = new JasmineProfileReporter({
       print: function(message) { console.log(message); }
     });
     jasmine.getEnv().addReporter(profileReporter);

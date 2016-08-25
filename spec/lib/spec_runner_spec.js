@@ -76,10 +76,10 @@ describe('SpecRunner', () => {
     });
 
     describe('when profile is true', () => {
-      let specProfileReporterJs;
+      let profileReporterJs;
 
       beforeEach(() => {
-        specProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'profile_reporter.js'), 'utf8');
+        profileReporterJs = fs.readFileSync(require.resolve('jasmine-profile-reporter/browser.js'), 'utf8');
         subject = new SpecRunner({profile: true});
       });
 
@@ -90,7 +90,7 @@ describe('SpecRunner', () => {
         expect($tags.length).toBe(7);
 
         expect($tags.eq(4).is('script')).toBe(true);
-        expect($tags.eq(4).html()).toBe(specProfileReporterJs);
+        expect($tags.eq(4).html()).toBe(profileReporterJs);
       });
     });
   });
@@ -173,11 +173,11 @@ describe('SpecRunner', () => {
     });
 
     describe('when profile is true', () => {
-      let addProfileReporterJs, specProfileReporterJs;
+      let addProfileReporterJs, profileReporterJs;
 
       beforeEach(() => {
         addProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'add_profile_reporter.js'), 'utf8');
-        specProfileReporterJs = fs.readFileSync(path.resolve(__dirname, '..', '..', 'dist', 'lib', 'reporters', 'profile_reporter.js'), 'utf8');
+        profileReporterJs = fs.readFileSync(require.resolve('jasmine-profile-reporter/browser.js'), 'utf8');
         subject = new SpecRunner({profile: true});
       });
 
@@ -200,7 +200,7 @@ describe('SpecRunner', () => {
         expect($tags.eq(3).html()).toBe(jsFiles[2]);
 
         expect($tags.eq(4).is('script')).toBe(true);
-        expect($tags.eq(4).html()).toBe(specProfileReporterJs);
+        expect($tags.eq(4).html()).toBe(profileReporterJs);
 
         expect($tags.eq(5).is('script')).toBe(true);
         expect($tags.eq(5).html()).toBe(bootFiles[0]);

@@ -31,7 +31,7 @@ class SpecRunner extends File {
       ...resolveJasmineFiles('path', 'cssFiles'),
       useSourcemappedStacktrace && 'stylesheets/sourcemapped_stacktrace_reporter.css',
       ...resolveJasmineFiles('path', 'jsFiles'),
-      profile && 'reporters/profile_reporter.js',
+      profile && require.resolve('jasmine-profile-reporter/browser.js'),
       ...(console ? [require.resolve('jasmine-json-stream-reporter/browser.js'), 'boot.js'] : resolveJasmineFiles('bootDir', 'bootFiles')),
       profile && !console && 'reporters/add_profile_reporter.js',
       useSourcemappedStacktrace && require.resolve('sourcemapped-stacktrace/dist/sourcemapped-stacktrace.js'),

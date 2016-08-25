@@ -8,6 +8,7 @@ const {spawn} = require('child_process');
 const thenify = require('thenify');
 const {obj: through} = require('through2');
 const {obj: reduce} = require('through2-reduce');
+const ProfileReporter = require('jasmine-profile-reporter');
 const TerminalReporter = require('jasmine-terminal-reporter');
 const toReporter = require('jasmine-json-stream-reporter/to-reporter');
 const split = require('split2');
@@ -39,8 +40,12 @@ function getServer(files, options = {}) {
   return listen(port, files, options);
 }
 
+function defaultReporters(options, profile) {
+  return [new TerminalReporter(options), profile && new ProfileReporter(options)].filter(Boolean);
+}
+
 function createServer(options) {
-  const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, ...opts} = options;
+  const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, ...opts} = options;
   const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
@@ -53,7 +58,7 @@ function createServer(options) {
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
     }))
-    .pipe(() => toReporter(reporter || new TerminalReporter(opts), {onError}));
+    .pipe(() => toReporter(reporter || defaultReporters(opts, profile), {onError}));
   return stream();
 }
 
