@@ -45,7 +45,7 @@ function defaultReporters(options, profile) {
 }
 
 function createServer(options) {
-  const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, ...opts} = options;
+  const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
   const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
@@ -58,7 +58,7 @@ function createServer(options) {
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
     }))
-    .pipe(() => toReporter(reporter || defaultReporters(opts, profile), {onError}));
+    .pipe(() => toReporter(reporter || defaultReporters(opts, profile), {onError, onConsoleMessage}));
   return stream();
 }
 

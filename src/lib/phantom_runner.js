@@ -11,7 +11,7 @@ page.onCallback = function(result) {
   if (result.exit) phantom.exit();
 };
 page.onConsoleMessage = function() {
-  page.onCallback({message: JSON.stringify({id: ':message', message: Array.prototype.slice.call(arguments, 0).join('') + '\n'})});
+  page.onCallback({message: JSON.stringify({id: ':consoleMessage', message: Array.prototype.slice.call(arguments, 0).join('')})});
 };
 
 var url = 'http://localhost:' + port;
