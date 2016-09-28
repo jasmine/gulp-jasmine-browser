@@ -49,6 +49,7 @@
         callPhantom({message: message});
       },
       onComplete: function() {
+        if (window.__coverage__) jsonStreamReporter.coverage(__coverage__);
         callPhantom({exit: true});
       }
     });
