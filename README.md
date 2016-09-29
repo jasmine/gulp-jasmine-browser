@@ -140,12 +140,10 @@ Generates a console reporter for the spec runner that should be used with a head
 Prints out timing information for your slowest specs after Jasmine is done.
 If used in the browser, this will print into the developer console. In headless mode, this will print to the terminal.
 
-##### sourcemappedStacktrace
-**EXPERIMENTAL** asynchronously loads the sourcemapped stacktraces for better stacktraces in chrome and firefox.
-
 #### for server and headless server
-##### port
-Sets the port for the server
+
+##### catch
+If true, the headless server catches exceptions raised while running tests
 
 ##### driver
 Sets the driver used by the headless server
@@ -161,24 +159,30 @@ gulp.task('jasmine', function() {
 });
 ```
 
-##### catch
-If true, the headless server catches exceptions raised while running tests
+##### onCoverage
+Called with the `__coverage__` from the browser, can be used with code coverage like [istanbul](http://gotwarlost.github.io/istanbul/) 
+
+##### port
+Sets the port for the server
 
 ##### random
 If true, the headless server runs the tests in random order
 
+##### reporter
+Provide a [custom reporter](http://jasmine.github.io/2.1/custom_reporter.html) for the output, defaults to the jasmine
+terminal reporter.
+
 ##### seed
 Sets the randomization seed if randomization is turned on
+
+##### sourcemappedStacktrace
+**EXPERIMENTAL** asynchronously loads the sourcemapped stacktraces for better stacktraces in chrome and firefox.
 
 ##### spec
 Only runs specs that match the given string
 
 ##### throwFailures
 If true, the headless server fails tests on the first failed expectation
-
-##### reporter
-Provide a [custom reporter](http://jasmine.github.io/2.1/custom_reporter.html) for the output, defaults to the jasmine
-terminal reporter.
 
 ## Development
 ### Getting Started
