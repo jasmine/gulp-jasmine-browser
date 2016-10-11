@@ -16,6 +16,7 @@ function renderFile(res, files, pathname, whenReady) {
   whenReady()
     .then(function() {
       let contents;
+      pathname = pathname.replace('%20', ' ');
       if (pathname && (contents = files[pathname])) {
         res.status(200).type(mime.lookup(pathname)).send(contents.toString());
         return;
