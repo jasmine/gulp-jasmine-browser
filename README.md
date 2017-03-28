@@ -40,10 +40,10 @@ To have the server automatically refresh when files change, you will want someth
 ```js
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
-var watch = require('gulp-watch')
+var watch = require('gulp-watch');
 
 gulp.task('jasmine', function() {
-  var filesForTest = ['src/**/*.js', 'spec/**/*_spec.js'] 
+  var filesForTest = ['src/**/*.js', 'spec/**/*_spec.js'];
   return gulp.src(filesForTest)
     .pipe(watch(filesForTest))
     .pipe(jasmineBrowser.specRunner())
