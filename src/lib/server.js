@@ -33,6 +33,7 @@ const Server = {
 
     app.use(favicon(path.resolve(__dirname, '..', 'public', 'jasmine_favicon.png')));
 
+    app.use(express.static(options.static.root,options.static.options));
     app.get('/', function(req, res) {
       const {whenReady = () => Promise.resolve()} = options;
       renderFile(res, files, 'specRunner.html', whenReady);
