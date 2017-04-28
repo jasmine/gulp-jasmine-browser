@@ -165,6 +165,8 @@ Called with the `__coverage__` from the browser, can be used with code coverage 
 ##### port
 Sets the port for the server
 
+##### static
+Sets the base directory for serving static files. See [here](https://expressjs.com/en/guide/using-middleware.html#middleware.built-in). This is especially helpful for [loading fixtures] (https://github.com/jasmine/gulp-jasmine-browser/issues/9).    
 ##### random
 If true, the headless server runs the tests in random order
 
