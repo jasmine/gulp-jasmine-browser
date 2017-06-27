@@ -1,10 +1,10 @@
 const lazypipe = require('lazypipe');
-const {listen} = require('./server');
+const server = require('./server');
 const once = require('lodash.once');
 const path = require('path');
 const portfinder = require('portfinder');
 const qs = require('qs');
-const {spawn} = require('child_process');
+const childProcess = require('child_process');
 const thenify = require('thenify');
 const {obj: through} = require('through2');
 const {obj: reduce} = require('through2-reduce');
@@ -36,15 +36,15 @@ function onError(message) {
 
 function getServer(files, options = {}) {
   const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
-  if (findOpenPort) return getPort().then(port => listen(port, files, options));
-  return listen(port, files, options);
+  if (findOpenPort) return getPort().then(port => server.listen(port, files, options));
+  return server.listen(port, files, options);
 }
 
 function defaultReporters(options, profile) {
   return [new TerminalReporter(options), profile && new ProfileReporter(options)].filter(Boolean);
 }
 
-function createServer(options) {
+function createServer(options = {}) {
   const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, onCoverage, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
   const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
@@ -53,7 +53,9 @@ function createServer(options) {
     .pipe(() => through((files, enc, next) => getServer(files, options).then(i => next(null, i))))
     .pipe(() => flatMap(({server, port}, next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
-      const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio});
+      const args = [runner, port, query];
+      options.ignoreSslErrors && args.splice(0, 0, '--ignore-ssl-errors=true');
+      const phantomProcess = childProcess.spawn(command, args, {cwd: path.resolve(__dirname), stdio});
       phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
