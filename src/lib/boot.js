@@ -53,6 +53,9 @@
         callPhantom({exit: true});
       }
     });
+    jasmine.snapshot = function(snapshot) {
+      jsonStreamReporter.snapshot(snapshot);
+    };
     env.addReporter(jsonStreamReporter);
   }
 
