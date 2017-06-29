@@ -1,4 +1,5 @@
-require('../spec_helper');
+import '../spec_helper';
+import {withUnhandledRejection} from '../support/unhandled_rejection_helper';
 
 describe('Server', function() {
   let app, createServer, files, request;
@@ -62,21 +63,26 @@ describe('Server', function() {
           expect(res.text).toContain('The New Version');
         });
 
-        it.async('does not render intermediate invalid states', async function() {
-          setTimeout(function() {
-            files['specRunner.html'] = 'The Bad Version';
-            whenReady.reject();
-            whenReady = new Deferred();
-          }, 100);
+        describe('when there is an error', () => {
+          withUnhandledRejection();
 
-          setTimeout(function() {
-            files['specRunner.html'] = 'The Good Version';
-            whenReady.resolve();
-          }, 200);
+          it.async('does not render intermediate invalid states', async function() {
+            setTimeout(function() {
+              files['specRunner.html'] = 'The Bad Version';
+              whenReady.reject(new Error('some error'));
+              whenReady = new Deferred();
+            }, 100);
 
-          const res = await request(app).get('/').expect(200);
-          expect(res.text).toContain('The Good Version');
+            setTimeout(function() {
+              files['specRunner.html'] = 'The Good Version';
+              whenReady.resolve();
+            }, 200);
+
+            const res = await request(app).get('/').expect(200);
+            expect(res.text).toContain('The Good Version');
+          });
         });
+
       });
     });
   });

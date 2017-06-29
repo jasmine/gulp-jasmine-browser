@@ -46,11 +46,11 @@
     "phantomjs-prebuilt": "^2.1.7",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.0",
-    "selenium-standalone": "^5.5.0",
+    "selenium-standalone": "^6.5.0",
     "slimerjs": "^0.906.2",
     "strong-wait-till-listening": "^1.0.2",
     "supertest": "^2.0.0",
-    "webdriverio": "^4.2.5",
+    "webdriverio": "^4.8.0",
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
