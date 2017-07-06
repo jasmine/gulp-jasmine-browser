@@ -69,7 +69,7 @@ function createServerWatch(options) {
     return through((file, enc, next) => {
       files[file.relative] = file.contents;
       createServerOnce();
-      next(null, files);
+      next(null, file);
     });
   })();
 }
