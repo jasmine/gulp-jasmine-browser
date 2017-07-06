@@ -57,6 +57,21 @@ If you are using Webpack or Browserify, you may want to use their watching mecha
 
 In `gulpfile.js`
 
+For Headless Chrome
+```js
+var gulp = require('gulp');
+var jasmineBrowser = require('gulp-jasmine-browser');
+
+gulp.task('jasmine-chrome', function() {
+  return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
+    .pipe(jasmineBrowser.specRunner({console: true}))
+    .pipe(jasmineBrowser.headless({driver: 'chrome'));
+});
+```
+
+To use this driver, the simple headless chrome npm [package](https://www.npmjs.com/package/simple-headless-chrome) must be installed in your project.
+It also assumes that at least Chrome 59 (to support headless mode) is installed.
+
 For PhantomJs
 ```js
 var gulp = require('gulp');
@@ -65,7 +80,7 @@ var jasmineBrowser = require('gulp-jasmine-browser');
 gulp.task('jasmine-phantom', function() {
   return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.headless());
+    .pipe(jasmineBrowser.headless({driver: 'phantomjs'));
 });
 ```
 
@@ -79,7 +94,7 @@ For SlimerJs
 var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
 
-gulp.task('jasmine-phantom', function() {
+gulp.task('jasmine-slimer', function() {
   return gulp.src(['src/**/*.js', 'spec/**/*_spec.js'])
     .pipe(jasmineBrowser.specRunner({console: true}))
     .pipe(jasmineBrowser.headless({driver: 'slimerjs'}));

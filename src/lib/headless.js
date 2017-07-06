@@ -19,11 +19,16 @@ const getPort = thenify(portfinder.getPort);
 const DEFAULT_JASMINE_PORT = 8888;
 
 const drivers = {
+  chrome: require('./drivers/chrome'),
   phantomjs: require('./drivers/phantomjs'),
   phantomjs1: require('./drivers/phantomjs1'),
   slimerjs: require('./drivers/slimerjs'),
   _default: require('./drivers/phantomjs')
 };
+
+function compact(array) {
+  return array.filter(Boolean);
+}
 
 function onError(message) {
   try {
@@ -41,7 +46,7 @@ function getServer(files, options = {}) {
 }
 
 function defaultReporters(options, profile) {
-  return [new TerminalReporter(options), profile && new ProfileReporter(options)].filter(Boolean);
+  return compact([new TerminalReporter(options), profile && new ProfileReporter(options)]);
 }
 
 function createServer(options) {
@@ -53,7 +58,7 @@ function createServer(options) {
     .pipe(() => through((files, enc, next) => getServer(files, options).then(i => next(null, i))))
     .pipe(() => flatMap(({server, port}, next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
-      const phantomProcess = spawn(command, [runner, port, query], {cwd: path.resolve(__dirname), stdio});
+      const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: path.resolve(__dirname), stdio});
       phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
@@ -91,5 +96,9 @@ module.exports = {
 
   phantomjs(options = {}) {
     return headless({driver: 'phantomjs', ...options});
+  },
+
+  chrome(options = {}) {
+    return headless({driver: 'chrome', ...options});
   }
 };

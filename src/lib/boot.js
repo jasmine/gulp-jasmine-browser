@@ -64,6 +64,6 @@
     if (currentWindowOnload) {
       currentWindowOnload();
     }
-    env.execute();
+    if (window.callPhantom) env.execute();
   };
 })();

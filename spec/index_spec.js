@@ -1,4 +1,4 @@
-require('./spec_helper');
+import './spec_helper';
 
 describe('gulp-jasmine-browser', function() {
   const timeout = 5000;
@@ -45,6 +45,13 @@ describe('gulp-jasmine-browser', function() {
 
     it.async('can run tests via SlimerJS', async function() {
       const {error, stdout, stderr} = await gulp('slimerjs').completed;
+      expect(error).toBeTruthy();
+      expect(stderr).toBe('');
+      expect(stdout).toContain('.F');
+    });
+
+    it.async('can run tests via headless chrome', async () => {
+      const {error, stdout, stderr} = await gulp('chrome').completed;
       expect(error).toBeTruthy();
       expect(stderr).toBe('');
       expect(stdout).toContain('.F');
