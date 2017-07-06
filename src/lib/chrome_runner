@@ -12,6 +12,9 @@ async function run(...args) {
     browser = new HeadlessChrome({headless: true});
     await browser.init();
     await browser.goTo(url);
+    await browser.onConsole(args => {
+      console.error(JSON.stringify({id: ':consoleMessage', message: args.map(arg => arg.value).join('')}));
+    });
     const run = require('./chrome_runner.js');
     const {result: {value: output}} = await browser.evaluateAsync(run);
     output.forEach(line => console.error(line));
