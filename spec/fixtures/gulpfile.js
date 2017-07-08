@@ -14,6 +14,12 @@ gulp.task('slimerjs', function() {
     .pipe(jasmineBrowser.headless({driver: 'slimerjs', showColors: false}));
 });
 
+gulp.task('chrome', () => {
+  return gulp.src('dummy_spec.js')
+    .pipe(jasmineBrowser.specRunner({console: true}))
+    .pipe(jasmineBrowser.headless({driver: 'chrome', showColors: false}));
+});
+
 gulp.task('server', function() {
   return gulp.src('dummy_spec.js')
     .pipe(jasmineBrowser.specRunner({console: false}))

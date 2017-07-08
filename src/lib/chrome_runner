@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+'use strict';
+require('babel-polyfill');
+
+async function run(...args) {
+  const [,,port = 8888, query] = args;
+  let url = `http://localhost:${port}`;
+  if (query) url += `/?${query}`;
+  let browser;
+  try {
+    const HeadlessChrome = require('simple-headless-chrome');
+    browser = new HeadlessChrome({headless: true});
+    await browser.init();
+    await browser.goTo(url);
+    await browser.onConsole(args => {
+      console.error(JSON.stringify({id: ':consoleMessage', message: args.map(arg => arg.value).join('')}));
+    });
+    const run = require('./chrome_runner.js');
+    const {result: {value: output}} = await browser.evaluateAsync(run);
+    output.forEach(line => console.error(line));
+  } finally {
+    await browser && browser.close(true);
+  }
+}
+
+run(...process.argv);
