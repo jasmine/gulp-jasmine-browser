@@ -43,7 +43,7 @@
     "npm": "^5.0.4",
     "phantomjs": "^2.1.7",
     "phantomjs-prebuilt": "^2.1.7",
-    "require-dir": "^0.3.0",
+    "require-dir": "^0.3.2",
     "run-sequence": "^1.1.0",
     "selenium-standalone": "^6.5.0",
     "simple-headless-chrome": "^2.5.10",
