@@ -1,6 +1,6 @@
 const privates = new WeakMap();
 
-class JasminePlugin {
+export default class JasminePlugin {
   constructor() {
     let resolve = function() {};
     let reject = function() {};
@@ -11,9 +11,7 @@ class JasminePlugin {
 
     privates.set(this, {promise, resolve, reject});
 
-    this.whenReady = function() {
-      return privates.get(this).promise;
-    }.bind(this);
+    this.whenReady = () => privates.get(this).promise;
   }
   apply(compiler) {
     compiler.plugin('invalid', () => {
@@ -29,5 +27,3 @@ class JasminePlugin {
     compiler.plugin('done', () => privates.get(this).resolve());
   }
 }
-
-module.exports = JasminePlugin;

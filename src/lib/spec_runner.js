@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
 import File from 'vinyl';
-import jasmineCore from 'jasmine-core';
+import {files as jasmineCoreFiles} from 'jasmine-core';
+import {readFileSync} from 'fs';
+import {resolve, extname} from 'path';
 
 function resolveJasmineFiles(directoryProp, fileNamesProp) {
-  const directory = jasmineCore.files[directoryProp];
-  const fileNames = jasmineCore.files[fileNamesProp];
-  return fileNames.map(fileName => path.resolve(directory, fileName));
+  const directory = jasmineCoreFiles[directoryProp];
+  const fileNames = jasmineCoreFiles[fileNamesProp];
+  return fileNames.map(fileName => resolve(directory, fileName));
 }
 
 const inlineTagExtensions = {'.css': 'style', '.js': 'script'};
@@ -19,7 +19,7 @@ const htmlForExtension = {
 
 const privates = new WeakMap();
 
-class SpecRunner extends File {
+export default class SpecRunner extends File {
   constructor(options = {}) {
     super({path: '/specRunner.html', base: '/'});
 
@@ -40,8 +40,8 @@ class SpecRunner extends File {
   }
 
   inlineFile(filePath) {
-    const fileContents = fs.readFileSync(path.resolve(__dirname, filePath), {encoding: 'utf8'});
-    const fileExtension = inlineTagExtensions[path.extname(filePath)];
+    const fileContents = readFileSync(resolve(__dirname, filePath), {encoding: 'utf8'});
+    const fileExtension = inlineTagExtensions[extname(filePath)];
     this.contents = Buffer.concat([
       this.contents,
       new Buffer(`<${fileExtension}>${fileContents}</${fileExtension}>`)
@@ -53,7 +53,7 @@ class SpecRunner extends File {
     const {files} = privates.get(this);
     if (files.has(filePath)) return this;
     files.add(filePath);
-    const fileExtension = path.extname(filePath);
+    const fileExtension = extname(filePath);
     this.contents = Buffer.concat([
       this.contents,
       new Buffer(htmlForExtension[fileExtension in htmlForExtension ? fileExtension : '_default'](filePath))
@@ -61,5 +61,3 @@ class SpecRunner extends File {
     return this;
   }
 }
-
-module.exports = SpecRunner;
