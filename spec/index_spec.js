@@ -39,21 +39,21 @@ describe('gulp-jasmine-browser', function() {
     const {error, stdout, stderr} = await gulp('phantomjs').completed;
     expect(error).toBeTruthy();
     expect(stderr).toBe('');
-    expect(stdout).toContain('.F');
+    expect(stdout.split('\n')).toContain('.F');
   });
 
   it.async('can run tests via SlimerJS', async function() {
     const {error, stdout, stderr} = await gulp('slimerjs').completed;
     expect(error).toBeTruthy();
     expect(stderr).toBe('');
-    expect(stdout).toContain('.F');
+    expect(stdout.split('\n')).toContain('.F');
   });
 
   it.async('can run tests via headless chrome', async () => {
     const {error, stdout, stderr} = await gulp('chrome').completed;
     expect(error).toBeTruthy();
     expect(stderr).toBe('');
-    expect(stdout).toContain('.F');
+    expect(stdout.split('\n')).toContain('.F');
   });
 
   describeWithoutTravisCI('when running in a browser', function() {
