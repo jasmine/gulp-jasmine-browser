@@ -1,4 +1,4 @@
-module.exports = function() {
+export default function slimerJs() {
   return {
     get command() {
       try {
@@ -10,4 +10,4 @@ module.exports = function() {
     runner: 'slimer_runner.js',
     output: 'stdout'
   };
-};
+}

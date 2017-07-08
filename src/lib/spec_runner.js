@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const File = require('vinyl');
-const jasmineCore = require('jasmine-core');
+import fs from 'fs';
+import path from 'path';
+import File from 'vinyl';
+import jasmineCore from 'jasmine-core';
 
 function resolveJasmineFiles(directoryProp, fileNamesProp) {
   const directory = jasmineCore.files[directoryProp];

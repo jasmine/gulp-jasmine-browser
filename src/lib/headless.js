@@ -1,29 +1,33 @@
-const lazypipe = require('lazypipe');
-const {listen} = require('./server');
-const once = require('lodash.once');
-const path = require('path');
-const portfinder = require('portfinder');
-const qs = require('qs');
-const {spawn} = require('child_process');
-const thenify = require('thenify');
-const {obj: through} = require('through2');
-const {obj: reduce} = require('through2-reduce');
-const ProfileReporter = require('jasmine-profile-reporter');
-const TerminalReporter = require('jasmine-terminal-reporter');
-const toReporter = require('jasmine-json-stream-reporter/to-reporter');
-const split = require('split2');
-const flatMap = require('flat-map');
+import lazypipe from 'lazypipe';
+import {listen} from './server';
+import path from 'path';
+import portfinder from 'portfinder';
+import qs from 'qs';
+import {spawn} from 'child_process';
+import thenify from 'thenify';
+import {obj as through} from 'through2';
+import {obj as reduce} from 'through2-reduce';
+import ProfileReporter from 'jasmine-profile-reporter';
+import TerminalReporter from 'jasmine-terminal-reporter';
+import toReporter from 'jasmine-json-stream-reporter/to-reporter';
+import split from 'split2';
+import flatMap from 'flat-map';
+import once from 'lodash.once';
+import ChromDriver from './drivers/chrome';
+import PhantomJsDriver from './drivers/phantomjs';
+import PhantomJs1Driver from './drivers/phantomjs1';
+import SlimerJsDriver from './drivers/slimerjs';
 
 const getPort = thenify(portfinder.getPort);
 
 const DEFAULT_JASMINE_PORT = 8888;
 
 const drivers = {
-  chrome: require('./drivers/chrome'),
-  phantomjs: require('./drivers/phantomjs'),
-  phantomjs1: require('./drivers/phantomjs1'),
-  slimerjs: require('./drivers/slimerjs'),
-  _default: require('./drivers/phantomjs')
+  chrome: ChromDriver,
+  phantomjs: PhantomJsDriver,
+  phantomjs1: PhantomJs1Driver,
+  slimerjs: SlimerJsDriver,
+  _default: PhantomJsDriver
 };
 
 function compact(array) {
@@ -83,22 +87,20 @@ function headless(options = {}) {
   return createServer({findOpenPort: true, ...options});
 }
 
-module.exports = {
-  headless,
+function server(options = {}) {
+  return createServerWatch(options);
+}
 
-  server(options = {}) {
-    return createServerWatch(options);
-  },
+function slimerjs(options = {}) {
+  return headless({driver: 'slimerjs', ...options});
+}
 
-  slimerjs(options = {}) {
-    return headless({driver: 'slimerjs', ...options});
-  },
+function phantomjs(options = {}) {
+  return headless({driver: 'phantomjs', ...options});
+}
 
-  phantomjs(options = {}) {
-    return headless({driver: 'phantomjs', ...options});
-  },
+function chrome(options = {}) {
+  return headless({driver: 'chrome', ...options});
+}
 
-  chrome(options = {}) {
-    return headless({driver: 'chrome', ...options});
-  }
-};
+export {headless, server, slimerjs, phantomjs, chrome};

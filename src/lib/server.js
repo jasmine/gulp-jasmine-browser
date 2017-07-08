@@ -1,7 +1,7 @@
-const express = require('express');
-const mime = require('mime');
-const path = require('path');
-const favicon = require('serve-favicon');
+import express from 'express';
+import mime from 'mime';
+import path from 'path';
+import favicon from 'serve-favicon';
 
 function log(message) {
   try {
@@ -27,35 +27,33 @@ function renderFile(res, files, pathname, whenReady) {
     });
 }
 
-const Server = {
-  createServer(files, options = {}) {
-    const app = express();
+function createServer(files, options = {}) {
+  const app = express();
 
-    app.use(favicon(path.resolve(__dirname, '..', 'public', 'jasmine_favicon.png')));
+  app.use(favicon(path.resolve(__dirname, '..', 'public', 'jasmine_favicon.png')));
 
-    app.get('/', function(req, res) {
-      const {whenReady = () => Promise.resolve()} = options;
-      renderFile(res, files, 'specRunner.html', whenReady);
+  app.get('/', function(req, res) {
+    const {whenReady = () => Promise.resolve()} = options;
+    renderFile(res, files, 'specRunner.html', whenReady);
+  });
+
+  app.get('*', function(req, res) {
+    const {whenReady = () => Promise.resolve()} = options;
+    const filePath = req.path.replace(/^\//, '');
+    const pathname = path.normalize(filePath);
+    renderFile(res, files, pathname, whenReady);
+  });
+
+  return app;
+}
+
+function listen(port, files, options = {}) {
+  return new Promise(resolve => {
+    const server = createServer(files, options).listen(port, function() {
+      log(`Jasmine server listening on port ${port}`);
+      resolve({server, port});
     });
+  });
+}
 
-    app.get('*', function(req, res) {
-      const {whenReady = () => Promise.resolve()} = options;
-      const filePath = req.path.replace(/^\//, '');
-      const pathname = path.normalize(filePath);
-      renderFile(res, files, pathname, whenReady);
-    });
-
-    return app;
-  },
-
-  listen(port, files, options = {}) {
-    return new Promise(resolve => {
-      const server = Server.createServer(files, options).listen(port, function() {
-        log(`Jasmine server listening on port ${port}`);
-        resolve({server, port});
-      });
-    });
-  }
-};
-
-module.exports = Server;
+export {createServer, listen};

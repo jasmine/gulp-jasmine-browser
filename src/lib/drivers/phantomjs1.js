@@ -1,4 +1,4 @@
-module.exports = function() {
+export default function phantomJs1() {
   return {
     get command() {
       try {
@@ -10,4 +10,4 @@ module.exports = function() {
     runner: 'phantom_runner.js',
     output: 'stderr'
   };
-};
+}
