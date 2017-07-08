@@ -1,10 +1,8 @@
 import lazypipe from 'lazypipe';
 import {listen} from './server';
 import path from 'path';
-import portfinder from 'portfinder';
 import qs from 'qs';
 import {spawn} from 'child_process';
-import thenify from 'thenify';
 import {obj as through} from 'through2';
 import {obj as reduce} from 'through2-reduce';
 import ProfileReporter from 'jasmine-profile-reporter';
@@ -17,8 +15,7 @@ import ChromDriver from './drivers/chrome';
 import PhantomJsDriver from './drivers/phantomjs';
 import PhantomJs1Driver from './drivers/phantomjs1';
 import SlimerJsDriver from './drivers/slimerjs';
-
-const getPort = thenify(portfinder.getPort);
+import portastic from 'portastic';
 
 const DEFAULT_JASMINE_PORT = 8888;
 
@@ -45,7 +42,7 @@ function onError(message) {
 
 function getServer(files, options = {}) {
   const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
-  if (findOpenPort) return getPort().then(port => listen(port, files, options));
+  if (findOpenPort) return portastic.find({min: 8000, max: 8888, retrieve: 1}).then(([port]) => listen(port, files, options));
   return listen(port, files, options);
 }
 
