@@ -1,5 +1,5 @@
-const gulp = require('gulp');
-const npm = require('npm');
+import gulp from 'gulp';
+import npm from 'npm';
 
 gulp.task('publish', ['build'], () => {
   npm.load({}, function(error) {

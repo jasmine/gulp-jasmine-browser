@@ -35,7 +35,6 @@
     "gulp-eslint": "^3.0.1",
     "gulp-if": "^2.0.0",
     "gulp-jasmine": "^2.0.1",
-    "gulp-load-plugins": "^1.2.4",
     "gulp-plumber": "^1.0.0",
     "jasmine-async-suite": "^0.0.7",
     "merge-stream": "^1.0.0",

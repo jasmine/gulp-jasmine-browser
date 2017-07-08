@@ -1,8 +1,8 @@
-const del = require('del');
-const gulp = require('gulp');
-const mergeStream = require('merge-stream');
-const {babel} = require('gulp-load-plugins')();
-const runSequence = require('run-sequence');
+import babel from 'gulp-babel';
+import del from 'del';
+import gulp from 'gulp';
+import mergeStream from 'merge-stream';
+import runSequence from 'run-sequence';
 
 const TRANSPILE_SRC = ['src/lib/drivers/**/*.js', 'src/webpack/**/*.js', 'src/lib/headless.js', 'src/lib/server.js', 'src/lib/spec_runner.js', 'src/index.js', 'src/lib/chrome_runner'];
 const RAW_SRC = ['src/lib/boot.js', 'src/lib/phantom_runner.js', 'src/lib/slimer_runner.js', 'src/lib/chrome_runner.js', 'src/lib/reporters/**/*.js'];

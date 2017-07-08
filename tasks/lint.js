@@ -1,5 +1,6 @@
-const gulp = require('gulp');
-const {eslint, 'if': gulpIf} = require('gulp-load-plugins')();
+import gulp from 'gulp';
+import eslint from 'gulp-eslint';
+import gulpIf from 'gulp-if';
 
 gulp.task('lint', () => {
   const {FIX: fix = true} = process.env;
