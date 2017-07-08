@@ -1,10 +1,10 @@
 import {Deferred, withUnhandledRejection} from '../spec_helper';
+import request from 'supertest';
+import {createServer} from '../../dist/lib/server';
 
 describe('Server', function() {
-  let app, createServer, files, request;
+  let app, files;
   beforeEach(function() {
-    request = require('../support/supertest_promisified');
-    createServer = require('../../dist/lib/server').createServer;
     files = {
       'specRunner.html': 'The Spec Runner'
     };

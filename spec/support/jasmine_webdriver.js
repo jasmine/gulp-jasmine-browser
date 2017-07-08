@@ -1,11 +1,12 @@
-const selenium = require('./selenium');
-const thenify = require('thenify');
-const waitOn = thenify(require('wait-on'));
-const webdriverio = require('webdriverio');
+import * as selenium from './selenium';
+import thenify from 'thenify';
+import * as webdriverio from 'webdriverio';
+import waitOnCallback from 'wait-on';
 
+const waitOn = thenify(waitOnCallback);
 const privates = new WeakMap();
 
-class JasmineWebdriver {
+export default class JasmineWebdriver {
   constructor({browser = 'firefox', timeout = 500} = {}) {
     privates.set(this, {processes: [], desiredCapabilities: {browserName: browser}, timeout});
   }
@@ -34,5 +35,3 @@ class JasmineWebdriver {
     return Promise.all([webdriverProcesses, ...otherProcesses]);
   }
 }
-
-module.exports = JasmineWebdriver;

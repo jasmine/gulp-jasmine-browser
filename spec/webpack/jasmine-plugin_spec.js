@@ -1,11 +1,11 @@
-require('../spec_helper');
+import '../spec_helper';
+import JasminePlugin from '../../dist/webpack/jasmine-plugin';
+import {EventEmitter} from 'events';
 
 describe('JasminePlugin', function() {
   let subject, compiler;
   beforeEach(function() {
-    const JasminePlugin = require('../../dist/webpack/jasmine-plugin');
     subject = new JasminePlugin();
-    const {EventEmitter} = require('events');
     compiler = new EventEmitter();
     compiler.plugin = compiler.on;
     subject.apply(compiler);

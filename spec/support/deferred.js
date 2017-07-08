@@ -1,4 +1,4 @@
-const Deferred = function() {
+export default function Deferred() {
   let resolver, rejector;
   const promise = new Promise(function(res, rej) {
     resolver = res;
@@ -19,6 +19,4 @@ const Deferred = function() {
     }
   });
   return wrapper;
-};
-
-module.exports = Deferred;
+}

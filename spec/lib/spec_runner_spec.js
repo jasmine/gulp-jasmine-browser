@@ -1,20 +1,20 @@
 import '../spec_helper';
+import jasmineCore from 'jasmine-core';
+import fs from 'fs';
+import path from 'path';
+import $ from 'cheerio';
+import SpecRunner from '../../dist/lib/spec_runner';
 
 describe('SpecRunner', () => {
-  let $, fs, path, cssFiles, jsFiles, subject, SpecRunner;
+  let cssFiles, jsFiles, subject;
 
   function loadJasmineFiles(...types) {
-    const jasmineCore = require('jasmine-core');
     return types.map(type => {
       return jasmineCore.files[type].map(fileName => fs.readFileSync(path.resolve(jasmineCore.files.path, fileName), 'utf8'));
     });
   }
 
   beforeEach(() => {
-    fs = require('fs');
-    path = require('path');
-    $ = require('cheerio');
-    SpecRunner = require('../../dist/lib/spec_runner');
     const result = loadJasmineFiles('jsFiles', 'cssFiles');
     jsFiles = result[0];
     cssFiles = result[1];

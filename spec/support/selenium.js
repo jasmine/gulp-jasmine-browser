@@ -1,7 +1,5 @@
-const seleniumStandalone = require('selenium-standalone');
-const thenify = require('thenify');
+import seleniumStandalone from 'selenium-standalone';
+import thenify from 'thenify';
 
-module.exports = {
-  install: thenify(seleniumStandalone.install),
-  start: thenify(seleniumStandalone.start)
-};
+export const install = thenify(seleniumStandalone.install);
+export const start = thenify(seleniumStandalone.start);
