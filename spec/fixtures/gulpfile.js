@@ -5,7 +5,7 @@ const jasmineBrowser = require('../../dist/index');
 gulp.task('phantomjs', function() {
   return gulp.src('dummy_spec.js')
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.headless({driver: 'phatomjs', showColors: false}));
+    .pipe(jasmineBrowser.headless({driver: 'phantomjs', showColors: false}));
 });
 
 gulp.task('slimerjs', function() {

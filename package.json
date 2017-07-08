@@ -48,8 +48,8 @@
     "selenium-standalone": "^6.5.0",
     "simple-headless-chrome": "^2.5.10",
     "slimerjs": "^0.906.2",
-    "strong-wait-till-listening": "^1.0.2",
     "supertest": "^2.0.0",
+    "wait-on": "^2.0.2",
     "webdriverio": "^4.8.0",
     "webpack-stream": "^3.2.0"
   },

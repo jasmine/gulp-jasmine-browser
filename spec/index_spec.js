@@ -1,15 +1,15 @@
-import './spec_helper';
+import {describeWithWebdriver, describeWithoutTravisCI, visit} from './spec_helper';
+import fs from 'fs';
+import path from 'path';
+import childProcess from 'child_process';
 
 describe('gulp-jasmine-browser', function() {
-  const timeout = 5000;
+  const gulpTimeout = 15000;
 
-  let fs, path, childProcess, processes;
+  let processes;
 
   beforeEach(function() {
     processes = [];
-    fs = require('fs');
-    path = require('path');
-    childProcess = require('child_process');
   });
 
   function gulp(task) {
@@ -19,7 +19,7 @@ describe('gulp-jasmine-browser', function() {
     const gulpPath = path.resolve('node_modules', '.bin', 'gulp');
     const gulpFile = path.resolve(__dirname, 'fixtures', 'gulpfile.js');
     const process = childProcess.exec([gulpPath, '--gulpfile', gulpFile, task].join(' '),
-      {timeout}, (error, stdout, stderr) => resolveCompleted({error, stdout, stderr}));
+      {timeout: gulpTimeout}, (error, stdout, stderr) => resolveCompleted({error, stdout, stderr}));
 
     const closed = new Promise(resolve => process.on('close', resolve));
 

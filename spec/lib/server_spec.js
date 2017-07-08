@@ -1,5 +1,4 @@
-import '../spec_helper';
-import {withUnhandledRejection} from '../support/unhandled_rejection_helper';
+import {Deferred, withUnhandledRejection} from '../spec_helper';
 
 describe('Server', function() {
   let app, createServer, files, request;

@@ -1,6 +1,6 @@
 const selenium = require('./selenium');
 const thenify = require('thenify');
-const waitUntilListening = thenify(require('strong-wait-till-listening'));
+const waitOn = thenify(require('wait-on'));
 const webdriverio = require('webdriverio');
 
 const privates = new WeakMap();
@@ -15,10 +15,9 @@ class JasmineWebdriver {
     return new Promise(async (resolve, reject) => {
       const port = 4444;
       await selenium.install();
-      const process = await selenium.start({spawnOptions: { stdio: [ 'ignore', 'ignore', 'ignore' ] }});
+      const process = await selenium.start({spawnOptions: {stdio: ['ignore', 'ignore', 'ignore']}});
       processes.push({process, closed: new Promise(res => process.once('close', res))});
-      await waitUntilListening({port, timeoutInMs: 30000})
-        .catch(() => reject(`error in waiting for selenium server on port ${port}`));
+      await waitOn({resources: [`tcp:${port}`], timeout: 30000}).catch(() => reject(`error in waiting for selenium server on port ${port}`));
       const driver = webdriverio.remote({desiredCapabilities, waitforTimeout: timeout}).init();
       await driver;
       processes.push({driver});

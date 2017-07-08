@@ -1,4 +1,4 @@
-require('../spec_helper');
+import '../spec_helper';
 
 describe('SpecRunner', () => {
   let $, fs, path, cssFiles, jsFiles, subject, SpecRunner;
