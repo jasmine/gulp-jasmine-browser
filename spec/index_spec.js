@@ -35,27 +35,25 @@ describe('gulp-jasmine-browser', function() {
     (await Promise.all(processes)).filter(p => p.process).map(p => (p.process.kill(), p.closed));
   });
 
-  describeWithoutTravisCI('when running a headless browser', () => {
-    it.async('can run tests via PhantomJS', async function() {
-      const {error, stdout, stderr} = await gulp('phantomjs').completed;
-      expect(error).toBeTruthy();
-      expect(stderr).toBe('');
-      expect(stdout).toContain('.F');
-    });
+  it.async('can run tests via PhantomJS', async function() {
+    const {error, stdout, stderr} = await gulp('phantomjs').completed;
+    expect(error).toBeTruthy();
+    expect(stderr).toBe('');
+    expect(stdout).toContain('.F');
+  });
 
-    it.async('can run tests via SlimerJS', async function() {
-      const {error, stdout, stderr} = await gulp('slimerjs').completed;
-      expect(error).toBeTruthy();
-      expect(stderr).toBe('');
-      expect(stdout).toContain('.F');
-    });
+  it.async('can run tests via SlimerJS', async function() {
+    const {error, stdout, stderr} = await gulp('slimerjs').completed;
+    expect(error).toBeTruthy();
+    expect(stderr).toBe('');
+    expect(stdout).toContain('.F');
+  });
 
-    it.async('can run tests via headless chrome', async () => {
-      const {error, stdout, stderr} = await gulp('chrome').completed;
-      expect(error).toBeTruthy();
-      expect(stderr).toBe('');
-      expect(stdout).toContain('.F');
-    });
+  it.async('can run tests via headless chrome', async () => {
+    const {error, stdout, stderr} = await gulp('chrome').completed;
+    expect(error).toBeTruthy();
+    expect(stderr).toBe('');
+    expect(stdout).toContain('.F');
   });
 
   describeWithoutTravisCI('when running in a browser', function() {
