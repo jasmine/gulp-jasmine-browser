@@ -4,7 +4,7 @@ require('babel-polyfill');
 
 async function run(...args) {
   const [,,port = 8888, query] = args;
-  let url = `http://localhost:${port}`;
+  let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
   let browser;
   try {

@@ -21,10 +21,10 @@ const privates = new WeakMap();
 
 export default class SpecRunner extends File {
   constructor(options = {}) {
-    super({path: '/specRunner.html', base: '/'});
+    const {path, profile, console, sourcemappedStacktrace} = options;
+    super({path, base: '/'});
 
     this.contents = new Buffer('<!DOCTYPE html>');
-    const {profile, console, sourcemappedStacktrace} = options;
     const useSourcemappedStacktrace = !console && sourcemappedStacktrace;
     privates.set(this, {files: new Set()});
     [

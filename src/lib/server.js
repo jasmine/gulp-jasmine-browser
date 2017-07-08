@@ -2,6 +2,7 @@ import express from 'express';
 import mime from 'mime';
 import path from 'path';
 import favicon from 'serve-favicon';
+import {PassThrough} from 'stream';
 
 function log(message) {
   try {
@@ -15,10 +16,12 @@ function log(message) {
 function renderFile(res, files, pathname, whenReady) {
   whenReady()
     .then(function() {
-      let contents;
-      pathname = pathname.replace('%20', ' ');
-      if (pathname && (contents = files[pathname])) {
-        res.status(200).type(mime.lookup(pathname)).send(contents.toString());
+      pathname = decodeURIComponent(pathname);
+      if (pathname && files[pathname]) {
+        res.status(200).type(mime.lookup(pathname));
+        const stream = new PassThrough();
+        stream.end(files[pathname]);
+        stream.pipe(res);
         return;
       }
       res.status(404).send('File not Found');
@@ -35,6 +38,11 @@ function createServer(files, options = {}) {
   app.get('/', function(req, res) {
     const {whenReady = () => Promise.resolve()} = options;
     renderFile(res, files, 'specRunner.html', whenReady);
+  });
+
+  app.get('/consoleRunner', function(req, res) {
+    const {whenReady = () => Promise.resolve()} = options;
+    renderFile(res, files, 'consoleRunner.html', whenReady);
   });
 
   app.get('*', function(req, res) {

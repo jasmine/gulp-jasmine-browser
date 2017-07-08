@@ -14,6 +14,6 @@ page.onConsoleMessage = function() {
   page.onCallback({message: JSON.stringify({id: ':consoleMessage', message: Array.prototype.slice.call(arguments, 0).join('')})});
 };
 
-var url = 'http://localhost:' + port;
+var url = 'http://localhost:' + port + '/consoleRunner';
 if (query) url += '/?' + query;
 page.open(url);
