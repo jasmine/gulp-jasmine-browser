@@ -66,10 +66,10 @@ describe('SpecRunner', () => {
 
       expect($tags.length).toBe(8);
 
-      expect($tags.eq(6).attr('src')).toBe('foo.js');
+      expect($tags.eq(6).attr('src')).toBe('/foo.js');
       expect($tags.eq(6).is('script')).toBe(true);
 
-      expect($tags.eq(7).attr('href')).toBe('bar.css');
+      expect($tags.eq(7).attr('href')).toBe('/bar.css');
       expect($tags.eq(7).attr('type')).toBe('text/css');
       expect($tags.eq(7).attr('rel')).toBe('stylesheet');
       expect($tags.eq(7).is('link')).toBe(true);

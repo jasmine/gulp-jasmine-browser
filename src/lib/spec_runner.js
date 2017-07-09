@@ -12,8 +12,8 @@ function resolveJasmineFiles(directoryProp, fileNamesProp) {
 const inlineTagExtensions = {'.css': 'style', '.js': 'script'};
 
 const htmlForExtension = {
-  '.js': filePath => `<script src="${filePath}"></script>`,
-  '.css': filePath => `<link href="${filePath}" rel="stylesheet" type="text/css"></link>`,
+  '.js': filePath => `<script src="/${filePath}"></script>`,
+  '.css': filePath => `<link href="/${filePath}" rel="stylesheet" type="text/css"></link>`,
   '_default': () => ''
 };
 

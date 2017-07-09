@@ -1,7 +1,7 @@
 import lazypipe from 'lazypipe';
 import {listen} from './server';
-import path from 'path';
-import qs from 'qs';
+import {resolve} from 'path';
+import {stringify} from 'qs';
 import {spawn} from 'child_process';
 import {obj as through} from 'through2';
 import {obj as reduce} from 'through2-reduce';
@@ -11,25 +11,22 @@ import toReporter from 'jasmine-json-stream-reporter/to-reporter';
 import split from 'split2';
 import flatMap from 'flat-map';
 import once from 'lodash.once';
-import ChromDriver from './drivers/chrome';
+import ChromeDriver from './drivers/chrome';
 import PhantomJsDriver from './drivers/phantomjs';
 import PhantomJs1Driver from './drivers/phantomjs1';
 import SlimerJsDriver from './drivers/slimerjs';
 import portastic from 'portastic';
+import {compact, parse} from './helper';
 
 const DEFAULT_JASMINE_PORT = 8888;
 
 const drivers = {
-  chrome: ChromDriver,
+  chrome: ChromeDriver,
   phantomjs: PhantomJsDriver,
   phantomjs1: PhantomJs1Driver,
   slimerjs: SlimerJsDriver,
   _default: PhantomJsDriver
 };
-
-function compact(array) {
-  return array.filter(Boolean);
-}
 
 function onError(message) {
   try {
@@ -40,9 +37,9 @@ function onError(message) {
   }
 }
 
-function getServer(files, options = {}) {
+function startServer(files, options = {}) {
   const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
-  if (findOpenPort) return portastic.find({min: 8000, max: 8888, retrieve: 1}).then(([port]) => listen(port, files, options));
+  if (findOpenPort) return portastic.find({min: 8000, max: DEFAULT_JASMINE_PORT, retrieve: 1}).then(([port]) => listen(port, files, options));
   return listen(port, files, options);
 }
 
@@ -50,19 +47,31 @@ function defaultReporters(options, profile) {
   return compact([new TerminalReporter(options), profile && new ProfileReporter(options)]);
 }
 
+function findOrStartServer(options) {
+  function helper(port, files) {
+    if (!port) return startServer(files, options);
+    return portastic.test(port).then(isOpen => {
+      if (!isOpen) return {server: {close: () => {}}, port};
+      return startServer(files, options);
+    });
+  }
+
+  return through((files, enc, next) => helper(options.port, files).then(i => next(null, i)).catch(next));
+}
+
 function createServer(options) {
   const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
-  const query = qs.stringify({catch: options.catch, random, throwFailures, spec, seed});
+  const query = stringify({catch: options.catch, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
     .pipe(() => reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}))
-    .pipe(() => through((files, enc, next) => getServer(files, options).then(i => next(null, i))))
+    .pipe(() => findOrStartServer(options))
     .pipe(() => flatMap(({server, port}, next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
-      const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: path.resolve(__dirname), stdio});
+      const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: resolve(__dirname, './runners'), stdio});
       phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
-      next(null, phantomProcess[output].pipe(split(null, JSON.parse, {objectMode: true})));
+      next(null, phantomProcess[output].pipe(split(parse)));
     }))
     .pipe(() => toReporter(reporter || defaultReporters(opts, profile), {onError, onConsoleMessage, onCoverage, onSnapshot}));
   return stream();
@@ -70,7 +79,7 @@ function createServer(options) {
 
 function createServerWatch(options) {
   const files = {};
-  const createServerOnce = once(() => getServer(files, options));
+  const createServerOnce = once(() => startServer(files, options));
   return lazypipe().pipe(() => {
     return through((file, enc, next) => {
       files[file.relative] = file.contents;
@@ -81,23 +90,17 @@ function createServerWatch(options) {
 }
 
 function headless(options = {}) {
-  return createServer({findOpenPort: true, ...options});
+  return createServer({...options, findOpenPort: true});
 }
 
 function server(options = {}) {
   return createServerWatch(options);
 }
 
-function slimerjs(options = {}) {
-  return headless({driver: 'slimerjs', ...options});
-}
-
-function phantomjs(options = {}) {
-  return headless({driver: 'phantomjs', ...options});
-}
-
-function chrome(options = {}) {
-  return headless({driver: 'chrome', ...options});
-}
+const [slimerjs, phantomjs, chrome] = ['slimerjs', 'phantomjs', 'chrome'].map(driver => {
+  return function(options = {}) {
+    return headless({...options, driver});
+  };
+});
 
 export {headless, server, slimerjs, phantomjs, chrome};

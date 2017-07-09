@@ -4,8 +4,8 @@ import gulp from 'gulp';
 import mergeStream from 'merge-stream';
 import runSequence from 'run-sequence';
 
-const TRANSPILE_SRC = ['src/lib/drivers/**/*.js', 'src/webpack/**/*.js', 'src/lib/headless.js', 'src/lib/server.js', 'src/lib/spec_runner.js', 'src/index.js', 'src/lib/chrome_runner'];
-const RAW_SRC = ['src/lib/boot.js', 'src/lib/phantom_runner.js', 'src/lib/slimer_runner.js', 'src/lib/chrome_runner.js', 'src/lib/reporters/**/*.js'];
+const TRANSPILE_SRC = ['src/lib/drivers/**/*.js', 'src/webpack/**/*.js', 'src/lib/headless.js', 'src/lib/server.js', 'src/lib/spec_runner.js', 'src/lib/helper.js', 'src/lib/runners/chrome_runner', 'src/index.js'];
+const RAW_SRC = ['src/lib/boot.js', 'src/lib/runners/phantom_runner.js', 'src/lib/runners/slimer_runner.js', 'src/lib/runners/chrome_evaluate.js', 'src/lib/reporters/**/*.js'];
 const CSS_SRC = ['src/lib/stylesheets/**/*.css'];
 const NON_JS_SRC = ['LICENSE.md', 'README.md', 'package.json', 'public/jasmine_favicon.png'];
 
