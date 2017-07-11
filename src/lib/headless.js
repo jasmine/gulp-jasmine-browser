@@ -37,9 +37,9 @@ function onError(message) {
   }
 }
 
-function startServer(files, options = {}) {
-  const {findOpenPort, port = DEFAULT_JASMINE_PORT} = options;
-  if (findOpenPort) return portastic.find({min: 8000, max: DEFAULT_JASMINE_PORT, retrieve: 1}).then(([port]) => listen(port, files, options));
+function startServer(files, options) {
+  const {port} = options;
+  if (!port) return portastic.find({min: 8000, max: DEFAULT_JASMINE_PORT, retrieve: 1}).then(([port]) => listen(port, files, options));
   return listen(port, files, options);
 }
 
@@ -90,11 +90,11 @@ function createServerWatch(options) {
 }
 
 function headless(options = {}) {
-  return createServer({...options, findOpenPort: true});
+  return createServer(options);
 }
 
 function server(options = {}) {
-  return createServerWatch(options);
+  return createServerWatch({port: DEFAULT_JASMINE_PORT, ...options});
 }
 
 const [slimerjs, phantomjs, chrome] = ['slimerjs', 'phantomjs', 'chrome'].map(driver => {
