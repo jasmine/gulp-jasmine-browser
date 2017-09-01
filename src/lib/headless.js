@@ -60,8 +60,8 @@ function findOrStartServer(options) {
 }
 
 function createServer(options) {
-  const {driver = 'phantomjs', random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
-  const query = stringify({catch: options.catch, random, throwFailures, spec, seed});
+  const {driver = 'phantomjs', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
+  const query = stringify({catch: options.catch, file, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
     .pipe(() => reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}))
