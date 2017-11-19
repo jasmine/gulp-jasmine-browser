@@ -2,25 +2,24 @@
 'use strict';
 require('babel-polyfill');
 
-async function run(...args) {
+(async function run(...args) {
   const [,,port = 8888, query] = args;
   let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
   let browser;
   try {
-    const HeadlessChrome = require('simple-headless-chrome');
-    browser = new HeadlessChrome({headless: true});
-    await browser.init();
-    await browser.goTo(url);
-    await browser.onConsole(args => {
-      console.error(JSON.stringify({id: ':consoleMessage', message: args.map(arg => arg.value).join('')}));
+    const puppeteer = require('puppeteer');
+    browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
+    await page.goto(url);
+    await page.on('console', ({args}) => {
+      console.error(JSON.stringify({id: ':consoleMessage', message: args.join('')}));
     });
     const run = require('./chrome_evaluate');
-    const {result: {value: output}} = await browser.evaluateAsync(run);
+    const output = await page.evaluate(run);
     output.forEach(line => console.error(line));
   } finally {
-    await browser && browser.close(true);
+    await browser && browser.close();
   }
-}
-
-run(...process.argv);
+})(...process.argv);
