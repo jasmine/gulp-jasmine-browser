@@ -3,23 +3,34 @@
 require('babel-polyfill');
 
 (async function run(...args) {
+  const {Server} = require('ws');
+  const puppeteer = require('puppeteer');
+  const run = require('./chrome_evaluate');
+
   const [,,port = 8888, query] = args;
   let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
-  let browser;
+
+  let server;
+
   try {
-    const puppeteer = require('puppeteer');
-    browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
-    await page.goto(url);
-    await page.on('console', ({args}) => {
-      console.error(JSON.stringify({id: ':consoleMessage', message: args.join('')}));
-    });
-    const run = require('./chrome_evaluate');
-    const output = await page.evaluate(run);
-    output.forEach(line => console.error(line));
+    server = new Server({port: 9876});
+    server.on('connection', socket => socket.on('message', console.error));
+
+    let browser;
+    try {
+      browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.on('console', ({args}) => {
+        console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
+      });
+
+      await page.goto(url);
+      await page.evaluate(run);
+    } finally {
+      browser && browser.close();
+    }
   } finally {
-    await browser && browser.close();
+    server.close();
   }
 })(...process.argv);
