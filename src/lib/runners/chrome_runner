@@ -19,7 +19,7 @@ require('babel-polyfill');
       const chunks = [];
       req.on('data', chunk => chunks.push(chunk));
       req.on('end', () => {
-        console.error(Buffer.concat(body).toString());
+        console.error(Buffer.concat(chunks).toString());
         res.writeHead(200);
         res.end();
       });
