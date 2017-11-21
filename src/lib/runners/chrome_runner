@@ -20,7 +20,7 @@ require('babel-polyfill');
 
     let browser;
     try {
-      browser = await puppeteer.launch({headless: false});
+      browser = await puppeteer.launch({});
       const page = await browser.newPage();
       await page.on('console', ({args}) => {
         console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
