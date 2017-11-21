@@ -8,7 +8,7 @@ require('babel-polyfill');
   const run = require('./chrome_evaluate');
 
   const [,,port = 8888, query] = args;
-  const {STREAM_PORT = 8889} = process.env;
+  const {STREAM_PORT = 8889, WITH_SANDBOX = 'false'} = process.env;
   let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
 
@@ -20,7 +20,9 @@ require('babel-polyfill');
 
     let browser;
     try {
-      browser = await puppeteer.launch({});
+      const args = [];
+      if (!JSON.parse(WITH_SANDBOX)) args.push('--no-sandbox');
+      browser = await puppeteer.launch({args});
       const page = await browser.newPage();
       await page.on('console', ({args}) => {
         console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
