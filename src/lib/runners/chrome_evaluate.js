@@ -1,11 +1,11 @@
 module.exports = streamPort => {
   let resolve;
   const promise = new Promise(res => resolve = res);
-  const socket = new WebSocket(`ws://localhost:${streamPort}`);
+  const send = body => fetch(`http://localhost:${streamPort}`, {method: 'POST', body});
   window.callPhantom = result => {
-    if (result.message) socket.send(result.message);
-    if (result.exit) (socket.close(), resolve())
+    if (result.message) send(result.message);
+    if (result.exit) resolve();
   };
-  socket.onopen = () => jasmine.getEnv().execute();
+  jasmine.getEnv().execute();
   return promise;
 };
