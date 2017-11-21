@@ -2,25 +2,38 @@
 'use strict';
 require('babel-polyfill');
 
-async function run(...args) {
+(async function run(...args) {
+  const {Server} = require('ws');
+  const puppeteer = require('puppeteer');
+  const run = require('./chrome_evaluate');
+
   const [,,port = 8888, query] = args;
+  const {STREAM_PORT, WITH_SANDBOX = 'false'} = process.env;
   let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
-  let browser;
-  try {
-    const HeadlessChrome = require('simple-headless-chrome');
-    browser = new HeadlessChrome({headless: true});
-    await browser.init();
-    await browser.goTo(url);
-    await browser.onConsole(args => {
-      console.error(JSON.stringify({id: ':consoleMessage', message: args.map(arg => arg.value).join('')}));
-    });
-    const run = require('./chrome_evaluate');
-    const {result: {value: output}} = await browser.evaluateAsync(run);
-    output.forEach(line => console.error(line));
-  } finally {
-    await browser && browser.close(true);
-  }
-}
 
-run(...process.argv);
+  let server;
+
+  try {
+    server = new Server({port: STREAM_PORT});
+    server.on('connection', socket => socket.on('message', console.error));
+
+    let browser;
+    try {
+      const args = [];
+      if (!JSON.parse(WITH_SANDBOX)) args.push('--no-sandbox');
+      browser = await puppeteer.launch({args});
+      const page = await browser.newPage();
+      await page.on('console', ({args}) => {
+        console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
+      });
+
+      await page.goto(url);
+      await page.evaluate(run, STREAM_PORT);
+    } finally {
+      browser && browser.close();
+    }
+  } finally {
+    server.close();
+  }
+})(...process.argv);
