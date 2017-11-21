@@ -60,7 +60,8 @@ function findOrStartServer(options) {
 }
 
 function createServer(options) {
-  const {driver = 'phantomjs', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot, onConsoleMessage = (...args) => console.log(...args), ...opts} = options;
+  const {driver = 'phantomjs', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot,
+    onConsoleMessage = (...args) => console.log(...args), streamPort, ...opts} = options;
   const query = stringify({catch: options.catch, file, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
@@ -68,7 +69,9 @@ function createServer(options) {
     .pipe(() => findOrStartServer(options))
     .pipe(() => flatMap(({server, port}, next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
-      const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: resolve(__dirname, './runners'), stdio});
+      const env = {...process.env};
+      streamPort && (env.STREAM_PORT = streamPort);
+      const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: resolve(__dirname, './runners'), env, stdio});
       phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(parse)));

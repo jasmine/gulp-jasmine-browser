@@ -8,25 +8,26 @@ require('babel-polyfill');
   const run = require('./chrome_evaluate');
 
   const [,,port = 8888, query] = args;
+  const {STREAM_PORT = 8889} = process.env;
   let url = `http://localhost:${port}/consoleRunner`;
   if (query) url += `/?${query}`;
 
   let server;
 
   try {
-    server = new Server({port: 9876});
+    server = new Server({port: STREAM_PORT});
     server.on('connection', socket => socket.on('message', console.error));
 
     let browser;
     try {
-      browser = await puppeteer.launch();
+      browser = await puppeteer.launch({headless: false});
       const page = await browser.newPage();
       await page.on('console', ({args}) => {
         console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
       });
 
       await page.goto(url);
-      await page.evaluate(run);
+      await page.evaluate(run, STREAM_PORT);
     } finally {
       browser && browser.close();
     }
