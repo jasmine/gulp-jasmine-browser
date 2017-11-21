@@ -3,7 +3,7 @@
 require('babel-polyfill');
 
 (async function run(...args) {
-  const http = require('http');
+  const {Server} = require('ws');
   const puppeteer = require('puppeteer');
   const run = require('./chrome_evaluate');
 
@@ -15,16 +15,8 @@ require('babel-polyfill');
   let server;
 
   try {
-    server = http.createServer((req, res) => {
-      const chunks = [];
-      req.on('data', chunk => chunks.push(chunk));
-      req.on('end', () => {
-        console.error(Buffer.concat(chunks).toString());
-        res.writeHead(200);
-        res.end();
-      });
-    });
-    server.listen(STREAM_PORT);
+    server = new Server({port: STREAM_PORT});
+    server.on('connection', socket => socket.on('message', console.error));
 
     let browser;
     try {
