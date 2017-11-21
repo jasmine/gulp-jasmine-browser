@@ -37,9 +37,13 @@ function onError(message) {
   }
 }
 
+function findPort() {
+  return portastic.find({min: 8000, max: DEFAULT_JASMINE_PORT, retrieve: 1}).then(([port]) => port);
+}
+
 function startServer(files, options) {
   const {port} = options;
-  if (!port) return portastic.find({min: 8000, max: DEFAULT_JASMINE_PORT, retrieve: 1}).then(([port]) => listen(port, files, options));
+  if (!port) return findPort().then(port => listen(port, files, options));
   return listen(port, files, options);
 }
 
@@ -48,29 +52,34 @@ function defaultReporters(options, profile) {
 }
 
 function findOrStartServer(options) {
-  function helper(port, files) {
-    if (!port) return startServer(files, options);
-    return portastic.test(port).then(isOpen => {
+  function helper(port, streamPort, files) {
+    let serverPromise, streamPortPromise;
+    if (!port) serverPromise = startServer(files, options);
+    else serverPromise = portastic.test(port).then(isOpen => {
       if (!isOpen) return {server: {close: () => {}}, port};
       return startServer(files, options);
     });
+    if (!streamPort) streamPortPromise = findPort();
+    else streamPortPromise = Promise.resolve(streamPort);
+    return Promise.all([serverPromise, streamPortPromise]);
   }
 
-  return through((files, enc, next) => helper(options.port, files).then(i => next(null, i)).catch(next));
+  return through((files, enc, next) => helper(options.port, options.streamPort, files)
+    .then(i => next(null, i)).catch(next));
 }
 
 function createServer(options) {
   const {driver = 'phantomjs', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot,
-    onConsoleMessage = (...args) => console.log(...args), streamPort, withSandbox, ...opts} = options;
+    onConsoleMessage = (...args) => console.log(...args), withSandbox, ...opts} = options;
   const query = stringify({catch: options.catch, file, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
   const stream = lazypipe()
     .pipe(() => reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}))
     .pipe(() => findOrStartServer(options))
-    .pipe(() => flatMap(({server, port}, next) => {
+    .pipe(() => flatMap(([{server, port}, streamPort], next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
       const env = {...process.env};
-      streamPort && (env.STREAM_PORT = streamPort);
+      env.STREAM_PORT = streamPort;
       withSandbox && (env.WITH_SANDBOX = true);
       const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: resolve(__dirname, './runners'), env, stdio});
       phantomProcess.on('close', () => server.close());
