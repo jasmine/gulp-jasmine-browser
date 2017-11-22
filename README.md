@@ -69,8 +69,7 @@ gulp.task('jasmine-chrome', function() {
 });
 ```
 
-To use this driver, the simple headless chrome npm [package](https://www.npmjs.com/package/simple-headless-chrome) must be installed in your project.
-It also assumes that at least Chrome 59 (to support headless mode) is installed.
+To use this driver, [puppeteer](https://www.npmjs.com/package/puppeteer) must be installed in your project.
 
 For PhantomJs
 ```js
