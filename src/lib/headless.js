@@ -1,4 +1,3 @@
-import lazypipe from 'lazypipe';
 import {listen} from './server';
 import {resolve} from 'path';
 import {stringify} from 'qs';
@@ -17,6 +16,7 @@ import PhantomJs1Driver from './drivers/phantomjs1';
 import SlimerJsDriver from './drivers/slimerjs';
 import portastic from 'portastic';
 import {compact, parse} from './helper';
+import pipe from 'multipipe';
 
 const DEFAULT_JASMINE_PORT = 8888;
 
@@ -69,14 +69,15 @@ function findOrStartServer(options) {
 }
 
 function createServer(options) {
-  const {driver = 'phantomjs', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot,
+  const {driver = 'chrome', file, random, throwFailures, spec, seed, reporter, profile, onCoverage, onSnapshot,
     onConsoleMessage = (...args) => console.log(...args), withSandbox, ...opts} = options;
   const query = stringify({catch: options.catch, file, random, throwFailures, spec, seed});
   const {command, runner, output} = drivers[driver in drivers ? driver : '_default']();
-  const stream = lazypipe()
-    .pipe(() => reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}))
-    .pipe(() => findOrStartServer(options))
-    .pipe(() => flatMap(([{server, port}, streamPort], next) => {
+
+  return pipe(
+    reduce((memo, file) => (memo[file.relative] = file.contents, memo), {}),
+    findOrStartServer(options),
+    flatMap(([{server, port}, streamPort], next) => {
       const stdio = ['pipe', output === 'stdout' ? 'pipe' : 1, output === 'stderr' ? 'pipe' : 2];
       const env = {...process.env};
       env.STREAM_PORT = streamPort;
@@ -85,21 +86,19 @@ function createServer(options) {
       phantomProcess.on('close', () => server.close());
       ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
       next(null, phantomProcess[output].pipe(split(parse)));
-    }))
-    .pipe(() => toReporter(reporter || defaultReporters(opts, profile), {onError, onConsoleMessage, onCoverage, onSnapshot}));
-  return stream();
+    }),
+    toReporter(reporter || defaultReporters(opts, profile), {onError, onConsoleMessage, onCoverage, onSnapshot}),
+  );
 }
 
 function createServerWatch(options) {
   const files = {};
   const createServerOnce = once(() => startServer(files, options));
-  return lazypipe().pipe(() => {
-    return through((file, enc, next) => {
-      files[file.relative] = file.contents;
-      createServerOnce();
-      next(null, file);
-    });
-  })();
+  return through((file, enc, next) => {
+    files[file.relative] = file.contents;
+    createServerOnce();
+    next(null, file);
+  });
 }
 
 function headless(options = {}) {
