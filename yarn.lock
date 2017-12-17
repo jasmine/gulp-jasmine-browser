@@ -878,7 +878,7 @@ babel-register@^6.24.1:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.3.19, babel-runtime@~6.23.0:
+babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.3.19, babel-runtime@~6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -2111,11 +2111,10 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flat-map@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/flat-map/-/flat-map-0.1.0.tgz#430ecd7040c66ee84001882c7593213cb8552c04"
+flat-map@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/flat-map/-/flat-map-1.0.0.tgz#c6938b492a2a317c165e8cfe433476215f8be0d1"
   dependencies:
-    babel-runtime "^6.11.6"
     is-stream "^1.1.0"
     through "^2.3.8"
 
