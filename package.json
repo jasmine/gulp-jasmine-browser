@@ -76,8 +76,8 @@
     "ws": "^3.3.1"
   },
   "peerDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-util": "^3.0.7"
+    "gulp": ">=3.9.0",
+    "gulp-util": ">=3.0.8"
   },
   "scripts": {
     "test": "gulp"
