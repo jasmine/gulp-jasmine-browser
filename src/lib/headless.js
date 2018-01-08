@@ -30,7 +30,7 @@ const drivers = {
 
 function onError(message) {
   try {
-    const {PluginError} = require('gulp-util');
+    const {PluginError} = require('plugin-error');
     return new PluginError('gulp-jasmine-browser', {message, showProperties: false});
   } catch(e) {
     return new Error(message);

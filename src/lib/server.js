@@ -6,7 +6,7 @@ import {PassThrough} from 'stream';
 
 function log(message) {
   try {
-    const {log} = require('gulp-util');
+    const log = require('fancy-log');
     log(message);
   } catch(e) {
     console.log(message);
