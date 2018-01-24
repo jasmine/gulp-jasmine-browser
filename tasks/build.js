@@ -2,7 +2,6 @@ import babel from 'gulp-babel';
 import del from 'del';
 import gulp from 'gulp';
 import mergeStream from 'merge-stream';
-import runSequence from 'run-sequence';
 
 const TRANSPILE_SRC = ['src/lib/drivers/**/*.js', 'src/webpack/**/*.js', 'src/lib/headless.js', 'src/lib/server.js', 'src/lib/spec_runner.js', 'src/lib/helper.js', 'src/lib/runners/chrome_runner', 'src/index.js'];
 const RAW_SRC = ['src/lib/boot.js', 'src/lib/runners/phantom_runner.js', 'src/lib/runners/slimer_runner.js', 'src/lib/runners/chrome_evaluate.js', 'src/lib/reporters/**/*.js'];
@@ -20,8 +19,8 @@ gulp.task('babel', () => {
   ).pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', done => runSequence('clean', 'babel', done));
+gulp.task('build', gulp.series('clean', 'babel'));
 
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', gulp.series('build', () => {
   gulp.watch([...TRANSPILE_SRC, ...RAW_SRC], ['babel']);
-});
+}));
