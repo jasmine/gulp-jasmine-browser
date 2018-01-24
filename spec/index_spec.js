@@ -94,6 +94,7 @@ describe('gulp-jasmine-browser', function() {
         it.async('supports webpack with watch: true', async function() {
           const {process: gulpProcess} = gulp('webpack-server');
           page = (await visit('http://localhost:8888')).page;
+          await page.waitForExist('.jasmine-bar.jasmine-failed');
           let text = await page.getText('.jasmine-bar.jasmine-failed');
           expect(text).toMatch('1 spec, 1 failure');
           function waitForWebpack() {
@@ -104,7 +105,9 @@ describe('gulp-jasmine-browser', function() {
           fs.writeFileSync(pathToMutableSpec, newSpec);
 
           await waitForWebpack();
-          text = await page.refresh().getText('.jasmine-bar.jasmine-passed');
+          text = await page.refresh()
+            .waitForExist('.jasmine-bar.jasmine-passed')
+            .getText('.jasmine-bar.jasmine-passed');
           expect(text).toMatch('1 spec, 0 failures');
         });
       });
