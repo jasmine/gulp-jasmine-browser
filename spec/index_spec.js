@@ -64,6 +64,7 @@ describe('gulp-jasmine-browser', function() {
       it.async('allows running tests in a browser', async function() {
         gulp('server');
         page = (await visit('http://localhost:8888')).page;
+        await page.waitForExist('.jasmine-bar.jasmine-failed');
         const text = await page.getText('.jasmine-bar.jasmine-failed');
         expect(text).toMatch('2 specs, 1 failure');
       });
