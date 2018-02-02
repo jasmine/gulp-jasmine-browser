@@ -8,8 +8,7 @@ gulp.task('publish', gulp.series('build', done => {
       done();
     }
     npm.commands.publish(['dist'], error => {
-      if (!error) done();
-      console.error(error);
+      if (error) console.error(error);
       done();
     });
   });
