@@ -21,6 +21,8 @@ gulp.task('babel', () => {
 
 gulp.task('build', gulp.series('clean', 'babel'));
 
-gulp.task('watch', gulp.series('build', () => {
-  gulp.watch([...TRANSPILE_SRC, ...RAW_SRC], ['babel']);
-}));
+gulp.task('build-watch', () => {
+  return gulp.watch([...TRANSPILE_SRC, ...RAW_SRC], ['babel']);
+});
+
+gulp.task('watch', gulp.series('build', 'build-watch'));
