@@ -313,7 +313,7 @@ array-unique@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
 
-arrify@^1.0.0:
+arrify@^1.0.0, arrify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
@@ -2274,10 +2274,6 @@ exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
 
-exit@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
-
 expand-brackets@^0.1.4:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/expand-brackets/-/expand-brackets-0.1.5.tgz#df07284e342a807cd733ac5af72411e581d1177b"
@@ -2347,7 +2343,7 @@ extend-shallow@^2.0.1:
   dependencies:
     is-extendable "^0.1.0"
 
-extend-shallow@^3.0.0:
+extend-shallow@^3.0.0, extend-shallow@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-3.0.2.tgz#26a71aaf073b39fb2127172746131c2704028db8"
   dependencies:
@@ -2948,15 +2944,15 @@ gulp-if@^2.0.0:
     ternary-stream "^2.0.1"
     through2 "^2.0.1"
 
-gulp-jasmine@^2.0.1:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/gulp-jasmine/-/gulp-jasmine-2.4.2.tgz#5a7f47e27370c3619ac0a2a442be399671409db3"
+gulp-jasmine@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-jasmine/-/gulp-jasmine-4.0.0.tgz#efe566b8350f41a14f63ffaecc6ccdf8646709a9"
   dependencies:
-    arrify "^1.0.0"
-    gulp-util "^3.0.0"
-    jasmine "^2.3.0"
-    jasmine-terminal-reporter "^1.0.0"
-    through2 "^2.0.0"
+    arrify "^1.0.1"
+    jasmine "^3.1.0"
+    jasmine-terminal-reporter "^1.0.3"
+    plugin-error "^1.0.1"
+    through2 "^2.0.3"
 
 gulp-match@^1.0.3:
   version "1.0.3"
@@ -3680,9 +3676,9 @@ jasmine-async-suite@^0.0.7:
     invariant "^2.2.1"
     lodash.isfunction "^3.0.8"
 
-jasmine-core@~2.6.0:
-  version "2.6.4"
-  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.6.4.tgz#dec926cd0a9fa287fb6db5c755fa487e74cecac5"
+jasmine-core@~3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-3.1.0.tgz#a4785e135d5df65024dfc9224953df585bd2766c"
 
 jasmine-json-stream-reporter@^0.3.1:
   version "0.3.1"
@@ -3695,20 +3691,19 @@ jasmine-profile-reporter@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/jasmine-profile-reporter/-/jasmine-profile-reporter-0.0.2.tgz#b10ddaf9ab75b7bc6c4c9f46f24a67a0455f3978"
 
-jasmine-terminal-reporter@^1.0.0, jasmine-terminal-reporter@^1.0.2:
+jasmine-terminal-reporter@^1.0.2, jasmine-terminal-reporter@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/jasmine-terminal-reporter/-/jasmine-terminal-reporter-1.0.3.tgz#896f1ec8fdf4bf6aecdd41c503eda7347f61526b"
   dependencies:
     indent-string "^2.1.0"
     pluralize "^1.2.1"
 
-jasmine@^2.3.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-2.6.0.tgz#6b22e70883e8e589d456346153b4d206ddbe217f"
+jasmine@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-3.1.0.tgz#2bd59fd7ec6ec0e8acb64e09f45a68ed2ad1952a"
   dependencies:
-    exit "^0.1.2"
     glob "^7.0.6"
-    jasmine-core "~2.6.0"
+    jasmine-core "~3.1.0"
 
 jju@^1.1.0:
   version "1.3.0"
@@ -5019,6 +5014,15 @@ pinkie-promise@^2.0.0:
 pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
+
+plugin-error@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/plugin-error/-/plugin-error-1.0.1.tgz#77016bd8919d0ac377fdcdd0322328953ca5781c"
+  dependencies:
+    ansi-colors "^1.0.1"
+    arr-diff "^4.0.0"
+    arr-union "^3.1.0"
+    extend-shallow "^3.0.2"
 
 pluralize@^1.2.1:
   version "1.2.1"

@@ -6,8 +6,8 @@
       getWindowLocation: function() { return window.location; }
     });
 
-    var catchingExceptions = queryString.getParam('catch');
-    env.catchExceptions(typeof catchingExceptions === 'undefined' ? true : catchingExceptions);
+    var stoppingOnSpecFailure = queryString.getParam('failFast');
+    env.stopOnSpecFailure(typeof stoppingOnSpecFailure === 'undefined' ? true : stoppingOnSpecFailure);
 
     var throwingExpectationFailures = queryString.getParam('throwFailures');
     env.throwOnExpectationFailure(throwingExpectationFailures);

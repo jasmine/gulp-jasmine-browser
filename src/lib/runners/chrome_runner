@@ -24,6 +24,12 @@ require('babel-polyfill');
       if (!JSON.parse(WITH_SANDBOX)) args.push('--no-sandbox');
       browser = await puppeteer.launch({args});
       const page = await browser.newPage();
+      await page.on('pageerror', ({message}) => {
+        console.error(JSON.stringify({id: ':consoleMessage', message}));
+      });
+      await page.on('error', ({message}) => {
+        console.error(JSON.stringify({id: ':consoleMessage', message}));
+      });
       await page.on('console', ({args}) => {
         console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
       });
