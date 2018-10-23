@@ -84,7 +84,10 @@ function createServer(options) {
       withSandbox && (env.WITH_SANDBOX = true);
       const phantomProcess = spawn(command, compact([runner, port, query]), {cwd: resolve(__dirname, './runners'), env, stdio});
       phantomProcess.on('close', () => server.close());
-      ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => phantomProcess && phantomProcess.kill()));
+      ['SIGINT', 'SIGTERM'].forEach(e => process.once(e, () => {
+        phantomProcess && phantomProcess.kill();
+        process.exit();
+      }));
       next(null, phantomProcess[output].pipe(split(parse)));
     }),
     toReporter(reporter || defaultReporters(opts, profile), {onError, onConsoleMessage, onCoverage, onSnapshot}),
