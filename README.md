@@ -215,4 +215,12 @@ Run tests with:
 npm test
 ```
 
+Note: `npm test` need a webdriver server up and running. An easy way of accomplish that is by using `webdriver-manager`:
+
+```bash
+npm install --global webdriver-manager
+webdriver-manager update
+webdriver-manager start
+```
+
 (c) Copyright 2016 Pivotal Software, Inc. All Rights Reserved.
