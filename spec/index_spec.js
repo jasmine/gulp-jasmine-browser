@@ -41,6 +41,7 @@ describe('gulp-jasmine-browser', function() {
       expect(error).toBeTruthy();
       expect(stderr).toContain('Error: 1 failure');
       expect(stdout).toContain('.F');
+      expect(stdout).toContain('A message from the page');
     });
 
     it.async('can run tests via SlimerJS', async function() {
@@ -48,6 +49,7 @@ describe('gulp-jasmine-browser', function() {
       expect(error).toBeTruthy();
       expect(stderr).toContain('Error: 1 failure');
       expect(stdout).toContain('.F');
+      expect(stdout).toContain('A message from the page');
     });
 
     it.async('can run tests via headless chrome', async () => {
@@ -55,6 +57,7 @@ describe('gulp-jasmine-browser', function() {
       expect(error).toBeTruthy();
       expect(stderr).toContain('Error: 1 failure');
       expect(stdout).toContain('.F');
+      expect(stdout).toContain('A message from the page');
     });
   });
 
