@@ -30,8 +30,10 @@ require('babel-polyfill');
       await page.on('error', ({message}) => {
         console.error(JSON.stringify({id: ':consoleMessage', message}));
       });
-      await page.on('console', ({args}) => {
-        console.error(JSON.stringify({id: ':consoleMessage', message: args.join('\n')}));
+      await page.on('console', msg => {
+        const type = typeof msg.type ==='string' ? msg.type : msg.type();
+        const text = typeof msg.text ==='string' ? msg.text : msg.text();
+        console.error(JSON.stringify({id: ':consoleMessage', message: `${type}: ${text}`}));
       });
 
       await page.goto(url);
