@@ -6,31 +6,31 @@
       getWindowLocation: function() { return window.location; }
     });
 
-    configOptions = {};
+    var configuration = {};
 
     var stoppingOnSpecFailure = queryString.getParam('failFast');
-    configOptions.failFast = typeof stoppingOnSpecFailure === 'undefined' ? true : stoppingOnSpecFailure;
+    configuration.failFast = typeof stoppingOnSpecFailure === 'undefined' ? true : stoppingOnSpecFailure;
 
     var throwingExpectationFailures = queryString.getParam('throwFailures');
-    configOptions.oneFailurePerSpec = throwingExpectationFailures;
+    configuration.oneFailurePerSpec = throwingExpectationFailures;
 
     var random = queryString.getParam('random');
-    configOptions.random = random;
+    configuration.random = random;
 
     var seed = queryString.getParam('seed');
     if (seed) {
-      env.seed(seed);
+      configuration.seed = seed;
     }
 
     var specFilter = new SpecFilter({
       filterString: function() { return queryString.getParam('spec'); }
     });
 
-    configOptions.specFilter = function(spec) {
+    configuration.specFilter = function(spec) {
       return specFilter.matches(spec.getFullName());
     };
 
-    env.configure(configOptions);
+    env.configure(configuration);
   }
 
   function extend(destination, source) {
