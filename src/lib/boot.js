@@ -6,14 +6,16 @@
       getWindowLocation: function() { return window.location; }
     });
 
+    configOptions = {};
+
     var stoppingOnSpecFailure = queryString.getParam('failFast');
-    env.stopOnSpecFailure(typeof stoppingOnSpecFailure === 'undefined' ? true : stoppingOnSpecFailure);
+    configOptions.failFast = typeof stoppingOnSpecFailure === 'undefined' ? true : stoppingOnSpecFailure;
 
     var throwingExpectationFailures = queryString.getParam('throwFailures');
-    env.throwOnExpectationFailure(throwingExpectationFailures);
+    configOptions.oneFailurePerSpec = throwingExpectationFailures;
 
     var random = queryString.getParam('random');
-    env.randomizeTests(random);
+    configOptions.random = random;
 
     var seed = queryString.getParam('seed');
     if (seed) {
@@ -24,9 +26,11 @@
       filterString: function() { return queryString.getParam('spec'); }
     });
 
-    env.specFilter = function(spec) {
+    configOptions.specFilter = function(spec) {
       return specFilter.matches(spec.getFullName());
     };
+
+    env.configure(configOptions);
   }
 
   function extend(destination, source) {
