@@ -4,6 +4,10 @@ Run jasmine tests in a browser or headless browser using gulp.
 
 [![Build Status](https://travis-ci.org/jasmine/gulp-jasmine-browser.svg?branch=master)](https://travis-ci.org/jasmine/gulp-jasmine-browser)
 
+## Discontinued
+The `gulp-jasmine-browser` package is discontinued. There will be no further releases. We recommend migrating to the
+[jasmine-browser-runner](https://github.com/jasmine/jasmine-browser) package.
+
 ## Installing
 `gulp-jasmine-browser` is available as an
 [npm package](https://www.npmjs.com/package/gulp-jasmine-browser).
